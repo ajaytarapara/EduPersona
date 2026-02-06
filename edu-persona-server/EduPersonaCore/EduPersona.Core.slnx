@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="EduPersona.Core.Api/EduPersona.Core.Api.csproj" />
+  <Project Path="EduPersona.Core.Business/EduPersona.Core.Business.csproj" />
+  <Project Path="EduPersona.Core.Data/EduPersona.Core.Data.csproj" />
+  <Project Path="EduPersona.Core.Shared/EduPersona.Core.Shared.csproj" />
+</Solution>

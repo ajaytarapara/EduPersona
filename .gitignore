@@ -1,0 +1,92 @@
+####################################
+# OS & Editor
+####################################
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+####################################
+# ASP.NET Core / .NET
+####################################
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+
+# ASP.NET Core secrets
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# Rider / VS
+.vs/
+_ReSharper*/
+*.DotSettings.user
+
+####################################
+# NuGet
+####################################
+packages/
+.nuget/
+
+####################################
+# React / Vite / Node
+####################################
+node_modules/
+dist/
+build/
+.eslintcache
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+####################################
+# Environment files
+####################################
+.env
+.env.*
+!.env.example
+
+####################################
+# Test / Coverage
+####################################
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+
+####################################
+# Logs
+####################################
+logs/
+*.log
+
+####################################
+# Database / Local Files
+####################################
+*.mdf
+*.ldf
+*.sqlite
+*.db
+
+####################################
+# Docker (optional)
+####################################
+docker-compose.override.yml
+
+####################################
+# Generated files
+####################################
+*.generated.cs
