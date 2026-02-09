@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="EduPersona.Assessment.Api/EduPersona.Assessment.Api.csproj" />
-  <Project Path="EduPersona.Assessment.Business/EduPersona.Assessment.Business.csproj" />
-  <Project Path="EduPersona.Assessment.Data/EduPersona.Assessment.Data.csproj" />
-  <Project Path="EduPersona.Assessment.Shared/EduPersona.Assessment.Shared.csproj" />
-</Solution>
