@@ -4,9 +4,9 @@ using EduPersona.Core.Data.IRepositories;
 
 namespace EduPersona.Core.Business.Services
 {
-    public class UserService : BaseService<User>, IUserService
+    public class UserProfileService : BaseService<UserProfile>, IUserProfileService
     {
-        public UserService(IUnitOfWork unitOfWork): base(unitOfWork)
+        public UserProfileService(IUnitOfWork unitOfWork): base(unitOfWork)
         {
         }
         

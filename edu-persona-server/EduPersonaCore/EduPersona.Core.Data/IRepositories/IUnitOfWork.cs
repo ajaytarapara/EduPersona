@@ -4,7 +4,7 @@ public interface IUnitOfWork : IDisposable
 {
     IBaseRepository<T> Repository<T>() where T : class;
 
-    IUserRepository UserRepository { get; }
+    IUserProfileRepository UserRepository { get; }
 
     int Save();
     Task<int> SaveAsync();

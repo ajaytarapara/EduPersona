@@ -1,6 +1,5 @@
 using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Data.Entities;
-using EduPersona.Core.Shared.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using static EduPersona.Core.Shared.ExceptionHandler.SpecificExceptions;
 
@@ -10,9 +9,9 @@ namespace EduPersona.Core.Api.Controllers
     [Route("api/[controller]")]
     public class AuthController : BaseApiController
     {
-        private readonly IUserService _userService;
+        private readonly IUserProfileService _userService;
 
-        public AuthController(IUserService userService)
+        public AuthController(IUserProfileService userService)
         {
             _userService = userService;
         }
@@ -27,11 +26,6 @@ namespace EduPersona.Core.Api.Controllers
             }
             return Success(user, "User fetched successfully");
         }
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] RegisterRequest registerRequest)
-        {
-            return Success(registerRequest, "User register successfully");
-        }
-
+      
     }
 }

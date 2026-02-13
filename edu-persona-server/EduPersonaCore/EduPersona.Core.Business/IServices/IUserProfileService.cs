@@ -2,7 +2,7 @@
 
 namespace EduPersona.Core.Business.IServices
 {
-    public interface IUserService : IBaseService<User>
+    public interface IUserProfileService : IBaseService<UserProfile>
     {
     }
 }

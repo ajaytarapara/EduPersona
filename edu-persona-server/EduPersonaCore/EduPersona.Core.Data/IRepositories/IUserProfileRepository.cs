@@ -2,7 +2,7 @@
 
 namespace EduPersona.Core.Data.IRepositories
 {
-    public interface IUserRepository : IBaseRepository<User>
+    public interface IUserProfileRepository : IBaseRepository<UserProfile>
     {
     }
 

@@ -7,9 +7,6 @@ namespace EduPersona.Core.Data.Entities
     {
         public int UserId { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public User? User { get; set; }
-
         public int CurrentDesignationId { get; set; }
 
         [ForeignKey(nameof(CurrentDesignationId))]

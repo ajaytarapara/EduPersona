@@ -111,72 +111,6 @@ namespace EduPersona.Core.Data.Migrations
                     b.ToTable("Professions");
                 });
 
-            modelBuilder.Entity("EduPersona.Core.Data.Entities.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6703), new TimeSpan(0, 0, 0, 0, 0)),
-                            CreatedBy = 1,
-                            DeletedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6707), new TimeSpan(0, 0, 0, 0, 0)),
-                            IsActive = false,
-                            IsDeleted = false,
-                            Name = "User",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6706), new TimeSpan(0, 0, 0, 0, 0))
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6708), new TimeSpan(0, 0, 0, 0, 0)),
-                            CreatedBy = 1,
-                            DeletedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6709), new TimeSpan(0, 0, 0, 0, 0)),
-                            IsActive = false,
-                            IsDeleted = false,
-                            Name = "Admin",
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6709), new TimeSpan(0, 0, 0, 0, 0))
-                        });
-                });
-
             modelBuilder.Entity("EduPersona.Core.Data.Entities.Skill", b =>
                 {
                     b.Property<int>("Id")
@@ -217,102 +151,6 @@ namespace EduPersona.Core.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
-                });
-
-            modelBuilder.Entity("EduPersona.Core.Data.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<DateOnly?>("Birthdate")
-                        .HasColumnType("date");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsProfileCompleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("PhoneNo")
-                        .HasMaxLength(10)
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedBy");
-
-                    b.HasIndex("DeletedBy");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UpdatedBy");
-
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6917), new TimeSpan(0, 0, 0, 0, 0)),
-                            CreatedBy = 1,
-                            DeletedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6918), new TimeSpan(0, 0, 0, 0, 0)),
-                            Email = "admin@edupersona.com",
-                            FirstName = "Admin",
-                            IsActive = false,
-                            IsDeleted = false,
-                            IsProfileCompleted = false,
-                            LastName = "EduPersona",
-                            PasswordHash = "Admin@123",
-                            RoleId = 1,
-                            UpdatedAt = new DateTimeOffset(new DateTime(2026, 2, 9, 13, 1, 34, 712, DateTimeKind.Unspecified).AddTicks(6917), new TimeSpan(0, 0, 0, 0, 0))
-                        });
                 });
 
             modelBuilder.Entity("EduPersona.Core.Data.Entities.UserDesignation", b =>
@@ -365,9 +203,61 @@ namespace EduPersona.Core.Data.Migrations
 
                     b.HasIndex("TargetDesignationId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserDesignations");
+                });
+
+            modelBuilder.Entity("EduPersona.Core.Data.Entities.UserProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateOnly?>("Birthdate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsProfileCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("PhoneNo")
+                        .HasMaxLength(10)
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("userId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserProfile");
                 });
 
             modelBuilder.Entity("EduPersona.Core.Data.Entities.UserSkill", b =>
@@ -412,8 +302,6 @@ namespace EduPersona.Core.Data.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserSkills");
                 });
 
@@ -426,39 +314,6 @@ namespace EduPersona.Core.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Profession");
-                });
-
-            modelBuilder.Entity("EduPersona.Core.Data.Entities.User", b =>
-                {
-                    b.HasOne("EduPersona.Core.Data.Entities.User", "CreatedByUser")
-                        .WithMany("CreatedUsers")
-                        .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EduPersona.Core.Data.Entities.User", "DeletedByUser")
-                        .WithMany("DeletedUsers")
-                        .HasForeignKey("DeletedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("EduPersona.Core.Data.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EduPersona.Core.Data.Entities.User", "UpdatedByUser")
-                        .WithMany("UpdatedUsers")
-                        .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("CreatedByUser");
-
-                    b.Navigation("DeletedByUser");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("UpdatedByUser");
                 });
 
             modelBuilder.Entity("EduPersona.Core.Data.Entities.UserDesignation", b =>
@@ -475,17 +330,9 @@ namespace EduPersona.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EduPersona.Core.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CurrentDesignation");
 
                     b.Navigation("TargetDesignation");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("EduPersona.Core.Data.Entities.UserSkill", b =>
@@ -496,24 +343,7 @@ namespace EduPersona.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EduPersona.Core.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Skill");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("EduPersona.Core.Data.Entities.User", b =>
-                {
-                    b.Navigation("CreatedUsers");
-
-                    b.Navigation("DeletedUsers");
-
-                    b.Navigation("UpdatedUsers");
                 });
 #pragma warning restore 612, 618
         }

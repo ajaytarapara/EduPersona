@@ -7,7 +7,7 @@ namespace EduPersona.Core.Data.Repositories
     {
         private readonly AppDbContext _context;
 
-        private IUserRepository? _userRepository;
+        private IUserProfileRepository? _userRepository;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -21,8 +21,8 @@ namespace EduPersona.Core.Data.Repositories
         }
 
         // Custom repository
-        public IUserRepository UserRepository
-            => _userRepository ??= new UserRepository(_context);
+        public IUserProfileRepository UserRepository
+            => _userRepository ??= new UserProfileRepository(_context);
 
         public int Save() => _context.SaveChanges();
 
