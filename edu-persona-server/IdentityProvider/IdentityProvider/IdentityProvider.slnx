@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="IdentityProvider.Api/IdentityProvider.Api.csproj" Id="3ba3772b-f4db-45b2-ac7f-2f831c0330fa" />
+  <Project Path="IdentityProvider.Business/IdentityProvider.Business.csproj" />
+  <Project Path="IdentityProvider.Data/IdentityProvider.Data.csproj" />
+  <Project Path="IdentityProvider.Shared/IdentityProvider.Shared.csproj" />
+</Solution>
