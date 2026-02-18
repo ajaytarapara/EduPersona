@@ -26,6 +26,8 @@ namespace IdentityProvider.Data.Entities
         [MaxLength(255)]
         public string? GoogleId { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }

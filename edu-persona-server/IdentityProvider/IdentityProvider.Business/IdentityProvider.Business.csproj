@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\IdentityProvider.Data\IdentityProvider.Data.csproj" />
     <ProjectReference Include="..\IdentityProvider.Shared\IdentityProvider.Shared.csproj" />
   </ItemGroup>
