@@ -3,7 +3,7 @@
 using IdentityProvider.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduPersona.Core.Data
+namespace IdentityProvider.Data
 {
     public class AppDbContext : DbContext
     {
