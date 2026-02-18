@@ -1,13 +1,21 @@
 import { createTheme } from "@mui/material/styles";
+import RalewayWoff2 from "./src/fonts/space-grotesk-v22-latin-regular.woff2";
 
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
 
     primary: {
-      light: "#818CF8", // lighter indigo
-      main: "#4F46E5", // deep indigo
-      dark: "#3730A3", // darker indigo
+      light: "#7C6FE6", // soft violet highlight
+      main: "#4F46E5", // deep indigo (matches image)
+      dark: "#2E267A", // dark violet (top-left depth)
+      contrastText: "#FFFFFF",
+    },
+
+    secondary: {
+      light: "#5B7CFA", // lighter blue glow
+      main: "#3B4FD8", // strong indigo-blue (image bottom-right)
+      dark: "#2634A6", // deep blue
       contrastText: "#FFFFFF",
     },
 
@@ -35,7 +43,24 @@ export const lightTheme = createTheme({
       contrastText: "#FFFFFF",
     },
 
-    divider: "#E2E8F0", // slate-200
+    divider: "#E2E8F0", // slate-200,
+  },
+  typography: {
+    fontFamily: "Raleway, Arial",
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Raleway';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 400;
+          src: local('Raleway'), local('Raleway-Regular'), url(${RalewayWoff2}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+      `,
+    },
   },
 });
 
@@ -44,9 +69,16 @@ export const darkTheme = createTheme({
     mode: "dark",
 
     primary: {
-      light: "#818CF8",
-      main: "#6366F1", // slightly brighter for dark mode
+      light: "#9AA5FF",
+      main: "#6366F1",
       dark: "#4338CA",
+      contrastText: "#FFFFFF",
+    },
+
+    secondary: {
+      light: "#6C8CFF",
+      main: "#4C63E6",
+      dark: "#2E3AA8",
       contrastText: "#FFFFFF",
     },
 
@@ -75,5 +107,22 @@ export const darkTheme = createTheme({
     },
 
     divider: "#334155", // slate-700
+  },
+  typography: {
+    fontFamily: "Raleway, Arial",
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+        @font-face {
+          font-family: 'Raleway';
+          font-style: normal;
+          font-display: swap;
+          font-weight: 400;
+          src: local('Raleway'), local('Raleway-Regular'), url(${RalewayWoff2}) format('woff2');
+          unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
+        }
+      `,
+    },
   },
 });

@@ -1,10 +1,10 @@
 import "./App.css";
-import { ToggleTheme } from "./components";
+import LoginPage from "./pages/Login";
 
 function App() {
   return (
     <>
-      <ToggleTheme />
+      <LoginPage />
     </>
   );
 }
