@@ -8,14 +8,14 @@ using static IdentityProvider.Shared.ExceptionHandler.SpecificExceptions;
 
 namespace IdentityProvider.Business.Services
 {
-    public class UserService : BaseService<User>, IUserService
+    public class RegisterService : BaseService<User>, IRegisterService
     {
         private readonly IMapper _mapper;
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper): base(unitOfWork)
+        public RegisterService(IUnitOfWork unitOfWork, IMapper mapper): base(unitOfWork)
         {
             _mapper = mapper;
         }
-        public async Task<User> RegisterAsync(Register request)
+        public async Task<User> RegisterAsync(RegisterRequest request)
         {
             bool exists = await ExistsAsync(x => x.Email == request.Email && x.IsActive);
 
@@ -29,7 +29,5 @@ namespace IdentityProvider.Business.Services
 
             return await AddAsync(user);
         }
-
-
     }
 }

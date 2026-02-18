@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-
 namespace IdentityProvider.Data.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
@@ -46,7 +45,9 @@ namespace IdentityProvider.Data.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await GetByIdAsync(id);
+            // For delete we need tracking
+            var entity = await _dbSet.FindAsync(id);
+
             if (entity == null)
                 throw new KeyNotFoundException("Entity not found");
 
@@ -67,28 +68,35 @@ namespace IdentityProvider.Data.Repositories
 
         #endregion
 
-        #region Get
+        #region Get (All NoTracking)
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.Where(predicate).ToListAsync();
+            return await _dbSet
+                .AsNoTracking()
+                .Where(predicate)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>>? predicate = null,
             Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
             if (include != null)
                 query = include(query);
@@ -103,7 +111,7 @@ namespace IdentityProvider.Data.Repositories
             Expression<Func<T, bool>> predicate,
             Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
             if (include != null)
                 query = include(query);
@@ -113,10 +121,12 @@ namespace IdentityProvider.Data.Repositories
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
-            return await _dbSet.AnyAsync(predicate);
+            // Exists doesn't need tracking
+            return await _dbSet
+                .AsNoTracking()
+                .AnyAsync(predicate);
         }
 
         #endregion
     }
 }
-

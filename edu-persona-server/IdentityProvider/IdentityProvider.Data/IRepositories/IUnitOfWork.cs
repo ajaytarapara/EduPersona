@@ -1,5 +1,4 @@
-﻿
-using IdentityProvider.Data.IRepositories;
+﻿using IdentityProvider.Data.IRepositories;
 
 public interface IUnitOfWork : IDisposable
 {

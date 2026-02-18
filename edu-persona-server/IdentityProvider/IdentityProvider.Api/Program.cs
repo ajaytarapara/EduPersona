@@ -1,6 +1,7 @@
 using AutoMapper;
 using EduPersona.Core.Data.Extension;
 using IdentityProvider.Api.HostedServices;
+using IdentityProvider.Api.Middleware;
 using IdentityProvider.Business.Extension;
 using IdentityProvider.Business.MappingProfile;
 using IdentityProvider.Data;
@@ -44,6 +45,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthorization();
 

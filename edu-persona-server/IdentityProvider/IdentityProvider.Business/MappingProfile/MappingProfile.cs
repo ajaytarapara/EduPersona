@@ -9,7 +9,7 @@ namespace IdentityProvider.Business.MappingProfile
     {
         public MappingProfile()
         {
-            CreateMap<Register, User>(MemberList.None)
+            CreateMap<RegisterRequest, User>(MemberList.None)
             .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
             .ForMember(dest => dest.RoleId, opt => opt.MapFrom(_ => 2));
 
