@@ -31,12 +31,12 @@ namespace IdentityProvider.Data.IRepositories
         );
 
         // Get first or default with includes
-        Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate,
+        Task<T?> GetFirstOrDefaultAsync(
+            Expression<Func<T, bool>> predicate,
             Func<IQueryable<T>, IQueryable<T>>? include = null
         );
 
         // Check existence
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
     }
-
 }

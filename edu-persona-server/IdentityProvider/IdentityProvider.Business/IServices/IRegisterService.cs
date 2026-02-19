@@ -3,8 +3,8 @@ using IdentityProvider.Shared.Models.Request;
 
 namespace IdentityProvider.Business.IServices
 {
-    public interface IUserService : IBaseService<User>
+    public interface IRegisterService : IBaseService<User>
     {
-        Task<User> RegisterAsync(Register request);
+        Task<User> RegisterAsync(RegisterRequest request);
     }
 }
