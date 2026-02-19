@@ -1,9 +1,11 @@
 using AutoMapper;
 using EduPersona.Core.Data.Extension;
+using IdentityProvider.Api.Extensions;
 using IdentityProvider.Api.HostedServices;
 using IdentityProvider.Business.Extension;
 using IdentityProvider.Business.MappingProfile;
 using IdentityProvider.Data;
+using IdentityProvider.Shared.Models.Helper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,14 +20,36 @@ builder.Services.AddBusiness();
 
 builder.Services.AddControllers();
 
+//Swagger
+builder.Services.AddSwaggerWithJwt();
+
+//JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+//Auto database update
 builder.Services.AddHostedService<MigrationHostedService>();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("Jwt"));
+
 builder.Services.AddSwaggerGen();
- 
+
+//Cors Policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3005, http://localhost:3006")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -46,6 +70,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseCors("AddCors");
 
 app.MapControllers();
 

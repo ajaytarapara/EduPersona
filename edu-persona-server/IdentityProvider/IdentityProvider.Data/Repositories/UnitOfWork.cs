@@ -9,6 +9,10 @@ namespace IdentityProvider.Data.Repositories
 
         private IUserRepository? _userRepository;
 
+        private IRefreshTokenRepository _refreshTokenRepository;
+
+        private ISessionRepository _sessionRepository;
+
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
@@ -23,6 +27,12 @@ namespace IdentityProvider.Data.Repositories
         // Custom repository
         public IUserRepository UserRepository
             => _userRepository ??= new UserRepository(_context);
+
+        public IRefreshTokenRepository RefreshTokenRepository
+            => _refreshTokenRepository ??= new RefreshTokenRepository(_context);
+
+        public ISessionRepository SessionRepository
+            => _sessionRepository ??= new SessionRepository(_context);
 
         public int Save() => _context.SaveChanges();
 

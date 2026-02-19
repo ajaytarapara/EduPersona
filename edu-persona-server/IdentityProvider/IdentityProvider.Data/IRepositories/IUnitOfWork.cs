@@ -7,6 +7,10 @@ public interface IUnitOfWork : IDisposable
 
     IUserRepository UserRepository { get; }
 
+    IRefreshTokenRepository RefreshTokenRepository { get; }
+
+    ISessionRepository SessionRepository { get; }
+
     int Save();
     Task<int> SaveAsync();
 }

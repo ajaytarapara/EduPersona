@@ -1,4 +1,3 @@
-using EduPersona.Core.Data;
 using IdentityProvider.Data;
 using Microsoft.EntityFrameworkCore;
 namespace IdentityProvider.Api.HostedServices

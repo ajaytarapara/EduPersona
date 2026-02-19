@@ -21,6 +21,7 @@ namespace IdentityProvider.Business.IServices
             Expression<Func<T, bool>> predicate,
             Func<IQueryable<T>, IQueryable<T>>? include = null
         );
+
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
     }
 }

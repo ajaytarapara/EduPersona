@@ -1,0 +1,19 @@
+using System.Security.Cryptography;
+
+namespace IdentityProvider.Shared.Helper
+{
+    public class RefreshTokenGenerator
+    {
+        public static string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            return Convert.ToBase64String(randomNumber);
+        }
+
+    }
+}
