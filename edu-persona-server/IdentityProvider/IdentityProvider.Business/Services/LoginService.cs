@@ -22,7 +22,7 @@ namespace IdentityProvider.Business.Services
             _configuration = configuration;
         }
 
-        public async Task<LoginResponse> LoginAsync(LoginRequest loginRequest)
+        public async Task<IdpLoginResponse> LoginAsync(LoginRequest loginRequest)
         {
             User? user = await GetFirstOrDefaultAsync(x => x.Email == loginRequest.Email && x.IsActive, query => query.Include(x => x.Role));
             if (user == null)
@@ -31,27 +31,99 @@ namespace IdentityProvider.Business.Services
             bool isPwdVerify = PasswordHelper.Verify(loginRequest.Password, user.PasswordHash);
 
             if (!isPwdVerify)
-                throw new BadRequestException(ApiMessages.InvalidPassword);
+                throw new BadRequestException(ApiMessages.InvalidMessage("Password"));
+
+            //Get session 
+            Session? storedSession = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(x => x.UserId == user.Id && x.IsActive && x.ExpiredAt > DateTime.UtcNow);
+
+            if (storedSession == null)
+            {
+                //create session
+                Session session = await CreateSession(user.Id);
+                IdpLoginResponse loginResponse = new IdpLoginResponse
+                {
+                    SessionId = session.Id
+                };
+                return loginResponse;
+            }
+
+            IdpLoginResponse idpLoginResponse = new IdpLoginResponse
+            {
+                SessionId = storedSession.Id
+            };
+
+            return idpLoginResponse;
+        }
+
+        public async Task<LoginResponse> ValidateSessionAsync(int sessionId)
+        {
+            Session? session = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(x => x.Id == sessionId && x.IsActive && x.ExpiredAt > DateTime.UtcNow,
+            query => query.Include(x => x.User).ThenInclude(x => x.Role));
+
+            if (session == null)
+                throw new BadRequestException(ApiMessages.InvalidMessage("Session"));
+
+            RefreshToken? storedRefreshToken = await _unitOfWork.RefreshTokenRepository.GetFirstOrDefaultAsync(x => x.SessionId == sessionId && !x.Revoked);
 
             //generate access and refresh token
-            string accessToken = await GenerateAccessToken(user);
+            string accessToken = await GenerateAccessToken(session.User);
             string refreshToken = RefreshTokenGenerator.GenerateRefreshToken();
-
-            //create session
-            Session session = await CreateSession(user.Id);
-
-            //create refresh token
-            await CreateRefreshToken(user.Id, session.Id, refreshToken);
+            if (storedRefreshToken == null)
+            {
+                //create refresh token
+                await CreateRefreshToken(session.UserId, session.Id, refreshToken);
+            }
 
             LoginResponse loginResponse = new LoginResponse
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken,
+                RefreshToken = storedRefreshToken == null ? refreshToken : storedRefreshToken.Token,
                 SessionId = session.Id,
-                UserInfo = _mapper.Map<UserInfo>(user)
+                UserInfo = _mapper.Map<UserInfo>(session.User)
             };
 
             return loginResponse;
+        }
+
+        public async Task<string> GetAccessTokenAsync(string refreshToken)
+        {
+            RefreshToken? token = await _unitOfWork.RefreshTokenRepository.GetFirstOrDefaultAsync(x => x.Token == refreshToken && !x.Revoked,
+            query => query.Include(x => x.Session).Include(x => x.User).ThenInclude(x => x.Role));
+
+            if (token == null)
+                throw new BadRequestException(ApiMessages.NotFoundMessage("RefreshToken"));
+
+            if (token.ExpiredAt < DateTime.UtcNow)
+                throw new BadRequestException(ApiMessages.RefreshTokenExpired);
+
+            if (token.Session.ExpiredAt < DateTime.UtcNow && token.Session.IsActive)
+                throw new BadRequestException(ApiMessages.SessionExpired);
+
+            string newAccessToken = await GenerateAccessToken(token.User);
+
+            return newAccessToken;
+        }
+
+        public async Task LogoutAsync(int sessionId)
+        {
+            Session? storedSession = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(x => x.Id == sessionId && x.IsActive && x.ExpiredAt > DateTime.UtcNow);
+            if (storedSession == null)
+                throw new BadRequestException(ApiMessages.SessionExpired);
+
+            storedSession.ExpiredAt = DateTime.UtcNow;
+            storedSession.IsActive = false;
+
+            RefreshToken? refreshToken = await _unitOfWork.RefreshTokenRepository.GetFirstOrDefaultAsync(x => x.SessionId == sessionId && !x.Revoked);
+            if (refreshToken == null)
+                throw new BadRequestException(ApiMessages.NotFoundMessage("RefreshToken"));
+
+            refreshToken.ExpiredAt = DateTime.UtcNow;
+            refreshToken.Revoked = true;
+
+            await _unitOfWork.SessionRepository.UpdateAsync(storedSession);
+            await _unitOfWork.RefreshTokenRepository.UpdateAsync(refreshToken);
+
+            await _unitOfWork.SaveAsync();
         }
 
         private async Task<string> GenerateAccessToken(User user)

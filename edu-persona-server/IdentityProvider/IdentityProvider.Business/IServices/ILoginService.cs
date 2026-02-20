@@ -6,6 +6,9 @@ namespace IdentityProvider.Business.IServices
 {
     public interface ILoginService : IBaseService<User>
     {
-        Task<LoginResponse> LoginAsync(LoginRequest loginRequest);
+        Task<IdpLoginResponse> LoginAsync(LoginRequest loginRequest);
+        Task<string> GetAccessTokenAsync(string refreshToken);
+        Task<LoginResponse> ValidateSessionAsync(int sessionId);
+        Task LogoutAsync(int sessionId);
     }
 }

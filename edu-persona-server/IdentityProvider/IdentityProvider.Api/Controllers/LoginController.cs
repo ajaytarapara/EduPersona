@@ -3,6 +3,7 @@ using IdentityProvider.Shared.Constants;
 using IdentityProvider.Shared.Models.Request;
 using IdentityProvider.Shared.Models.Response;
 using Microsoft.AspNetCore.Mvc;
+using static IdentityProvider.Shared.ExceptionHandler.SpecificExceptions;
 
 namespace IdentityProvider.Api.Controllers
 {
@@ -15,33 +16,51 @@ namespace IdentityProvider.Api.Controllers
         {
             _loginService = loginService;
         }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
-            LoginResponse loginResponse = await _loginService.LoginAsync(loginRequest);
-            Response.Cookies.Append("access_token", loginResponse.AccessToken, new CookieOptions
+            IdpLoginResponse response = await _loginService.LoginAsync(loginRequest);
+
+            Response.Cookies.Append("session_id", response.SessionId.ToString(), new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
+                Secure = true,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Expires = DateTime.UtcNow.AddHours(8),
             });
 
-            Response.Cookies.Append("refresh_token", loginResponse.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = false,
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddDays(7),
-            });
+            return Success(response, ApiMessages.RequestSuccessful);
+        }
 
-            var response = new
-            {
-                userInfo = loginResponse.UserInfo,
-                sessionId = loginResponse.SessionId
-            };
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet("validate-session/{sessionId}")]
+        public async Task<IActionResult> ValidateSession(int sessionId)
+        {
+            LoginResponse loginResponse = await _loginService.ValidateSessionAsync(sessionId);
+            return Success(loginResponse, ApiMessages.RequestSuccessful);
+        }
 
-            return Success(response, ApiMessages.LoginSuccessfully);
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost("access-token")]
+        public async Task<IActionResult> GetAccessToken([FromBody] string refreshToken)
+        {
+            string newTokens = await _loginService.GetAccessTokenAsync(refreshToken);
+            return Success(newTokens, ApiMessages.RequestSuccessful);
+        }
+
+        [HttpGet("logout/{sessionId}")]
+        public async Task<IActionResult> Logout(int sessionId)
+        {
+            HttpClient httpClient = new HttpClient();
+            var profileAppResponse = await httpClient.GetAsync($"http://localhost:5238/api/Auth/logout");
+            if (!profileAppResponse.IsSuccessStatusCode)
+            {
+                throw new BadRequestException(ApiMessages.LogoutFail);
+            }
+            await _loginService.LogoutAsync(sessionId);
+            Response.Cookies.Delete("session_id");
+            return Success(ApiMessages.SuccessfullyMessage("Logout"));
         }
     }
 }

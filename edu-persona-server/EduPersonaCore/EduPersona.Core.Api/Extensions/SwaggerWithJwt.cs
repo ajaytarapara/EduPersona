@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 
 namespace EduPersona.Core.Api.Extensions
@@ -15,9 +11,9 @@ namespace EduPersona.Core.Api.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HelpDesk API",
+                    Title = "EduPersona Core API",
                     Version = "v1",
-                    Description = "HelpDesk Support System API"
+                    Description = "EduPersona Profile API"
                 });
 
                 // Add JWT support
