@@ -3,6 +3,7 @@ using System;
 using IdentityProvider.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IdentityProvider.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260218102658_SeedClientAppData")]
+    partial class SeedClientAppData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +67,7 @@ namespace IdentityProvider.Data.Migrations
                             Id = 1,
                             AppName = "User Profile App",
                             ClientSecret = "PIY135_USER_PROFILE_APP_531yip",
-                            CreatedAt = new DateTime(2026, 2, 19, 8, 0, 34, 534, DateTimeKind.Utc).AddTicks(4363),
+                            CreatedAt = new DateTime(2026, 2, 18, 10, 26, 57, 37, DateTimeKind.Utc).AddTicks(2965),
                             IsActive = true,
                             PostLogoutUris = "https://profile.app/logout",
                             RedirectUris = "https://profile.app/callback"
@@ -74,7 +77,7 @@ namespace IdentityProvider.Data.Migrations
                             Id = 2,
                             AppName = "Exam App",
                             ClientSecret = "ADG086_EXAM_APP_680adg",
-                            CreatedAt = new DateTime(2026, 2, 19, 8, 0, 34, 534, DateTimeKind.Utc).AddTicks(4365),
+                            CreatedAt = new DateTime(2026, 2, 18, 10, 26, 57, 37, DateTimeKind.Utc).AddTicks(2968),
                             IsActive = true,
                             PostLogoutUris = "https://exam.app/logout",
                             RedirectUris = "https://exam.app/callback"
@@ -143,15 +146,15 @@ namespace IdentityProvider.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 2, 19, 8, 0, 34, 534, DateTimeKind.Utc).AddTicks(4170),
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 2, 18, 10, 26, 57, 37, DateTimeKind.Utc).AddTicks(2791),
                             IsActive = true,
                             Name = "User"
                         },
                         new
                         {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 2, 19, 8, 0, 34, 534, DateTimeKind.Utc).AddTicks(4175),
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 2, 18, 10, 26, 57, 37, DateTimeKind.Utc).AddTicks(2793),
                             IsActive = true,
                             Name = "Admin"
                         });
@@ -237,7 +240,7 @@ namespace IdentityProvider.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 2, 19, 8, 0, 34, 534, DateTimeKind.Utc).AddTicks(4337),
+                            CreatedAt = new DateTime(2026, 2, 18, 10, 26, 57, 37, DateTimeKind.Utc).AddTicks(2942),
                             Email = "admin@edupersona.com",
                             FirstName = "Admin",
                             IsActive = true,

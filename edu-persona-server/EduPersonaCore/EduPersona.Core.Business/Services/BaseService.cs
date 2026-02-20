@@ -1,11 +1,6 @@
 ﻿using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Data.IRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduPersona.Core.Business.Services
 {

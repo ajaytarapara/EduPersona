@@ -2,7 +2,7 @@
 using IdentityProvider.Data.IRepositories;
 using System.Linq.Expressions;
 
-namespace  IdentityProvider.Business.Services
+namespace IdentityProvider.Business.Services
 {
     public class BaseService<T> : IBaseService<T> where T : class
     {

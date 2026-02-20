@@ -17,6 +17,17 @@ namespace EduPersona.Core.Api.Controllers
             ));
         }
 
+        protected IActionResult Success(string message)
+        {
+            return Ok(new ApiResponse<object>(
+                true,
+                HttpStatusCode.OK,
+                message,
+                null
+            ));
+        }
+
+
         protected IActionResult Error(string message, HttpStatusCode statusCode = HttpStatusCode.BadRequest, List<string> errors = null)
         {
             return StatusCode((int)statusCode, new ApiResponse<object>(

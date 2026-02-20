@@ -1,12 +1,5 @@
-﻿using EduPersona.Core.Business.IServices;
-using EduPersona.Core.Business.Services;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduPersona.Core.Business.Extension
 {

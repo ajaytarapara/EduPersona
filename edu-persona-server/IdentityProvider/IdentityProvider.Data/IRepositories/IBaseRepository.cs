@@ -26,9 +26,8 @@ namespace IdentityProvider.Data.IRepositories
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
         // Get with includes
-        Task<IEnumerable<T>> GetAsync(
-            Expression<Func<T, bool>>? predicate = null,
-            Func<IQueryable<T>, IQueryable<T>>? include = null
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>,
+            IQueryable<T>>? include = null
         );
 
         // Get first or default with includes

@@ -1,6 +1,8 @@
+using System.Text.Json;
 using EduPersona.Core.Business.IServices;
-using EduPersona.Core.Data.Entities;
-using EduPersona.Core.Shared.Models.Request;
+using EduPersona.Core.Shared.Constants;
+using EduPersona.Core.Shared.Models.ExternalApiResponse;
+using EduPersona.Core.Shared.Models.Response;
 using Microsoft.AspNetCore.Mvc;
 using static EduPersona.Core.Shared.ExceptionHandler.SpecificExceptions;
 
@@ -17,16 +19,86 @@ namespace EduPersona.Core.Api.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetUser(Login req)
+        [HttpGet("get-access-token/{sessionId}")]
+        public async Task<IActionResult> GetAccessToken(int sessionId)
         {
-            string user = "test";
-            if (user == "test")
+            HttpClient httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"http://localhost:5183/api/Login/validate-session/{sessionId}");
+            if (!response.IsSuccessStatusCode)
             {
-                throw new NotFoundException("Not found");
+                throw new BadRequestException(Messages.AccessTokenGenerateError);
             }
-            return Success(user, "User fetched successfully");
+
+            var data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            ApiResponse<AccessTokenResponse>? result = JsonSerializer.Deserialize<ApiResponse<AccessTokenResponse>>(data, options);
+
+            Response.Cookies.Append("access_token", result.Data.AccessToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(60),
+            });
+
+            Response.Cookies.Append("refresh_token", result.Data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7),
+            });
+
+            return Success(result.Data.UserInfo, Messages.LoginSuccessfully);
         }
-      
+
+        [HttpGet("get-access-token-by-refresh-token")]
+        public async Task<IActionResult> GetAccessTokenByRefreshToken()
+        {
+            string? refreshToken = Request.Cookies["refresh_token"];
+
+            if (refreshToken == null)
+                return Unauthorized(Messages.RefreshTokenExpired);
+
+            HttpClient httpClient = new HttpClient();
+
+            var response = await httpClient.PostAsJsonAsync($"http://localhost:5183/api/Login/access-token", refreshToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new BadRequestException(Messages.AccessTokenGenerateError);
+            }
+
+            var data = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            ApiResponse<string>? result = JsonSerializer.Deserialize<ApiResponse<string>>(data, options);
+
+            Response.Cookies.Append("access_token", result.Data, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddMinutes(60),
+            });
+
+            return Success(Messages.RequestSuccessful);
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+            return Success(Messages.SuccessfullyMessage("Logout"));
+        }
     }
 }

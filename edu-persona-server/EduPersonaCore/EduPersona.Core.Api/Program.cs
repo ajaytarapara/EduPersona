@@ -4,6 +4,7 @@ using EduPersona.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using EduPersona.Core.Data.Extension;
 using EduPersona.Core.Business.Extension;
+using EduPersona.Core.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Register DbContext
 builder.Services.AddDbContext<AppDbContext>(option => option.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Swagger
+builder.Services.AddSwaggerWithJwt();
+
+//JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddHostedService<MigrationHostedService>();
 

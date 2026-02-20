@@ -14,6 +14,11 @@
         public static string PasswordMinLength => "Password must be at least 6 characters long.";
         public static string PasswordRegex =>
            "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.";
-
+        public static string AccessTokenGenerateError => "Your session has expired or invalid. Please try again.";
+        public const string LoginSuccessfully = "Login successfully.";
+        public static readonly Func<string, string> NotFoundMessage = (entityName) => $"{entityName} not found.";
+        public const string RefreshTokenExpired = "Refresh token expired.";
+        public const string RequestSuccessful = "Request successful.";
+        public static readonly Func<string, string> SuccessfullyMessage = (entityName) => $"{entityName} successfully.";
     }
 }
