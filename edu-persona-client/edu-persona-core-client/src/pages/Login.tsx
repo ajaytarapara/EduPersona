@@ -15,8 +15,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import { AuthLayout } from "../components/ui";
 import { useState } from "react";
 import { GoogleIcon } from "../assets";
+import { useNavigate } from "react-router-dom";
+import { Routes } from "../utils";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const [isPwdVisible, setIsPwdVisible] = useState<boolean>(false);
   const methods = useForm({
     defaultValues: {
@@ -95,7 +98,12 @@ const LoginPage = () => {
               marginTop="16px"
             >
               Don't have an account?{" "}
-              <StyledSpan color="text.primary">Create one</StyledSpan>
+              <StyledSpan
+                color="text.primary"
+                onClick={() => navigate(Routes.Register)}
+              >
+                Create one
+              </StyledSpan>
             </Typography>
           </StyledFormContainer>
         }

@@ -44,9 +44,8 @@ namespace IdentityProvider.Api.Middleware
                 );
 
                 //convert C# model to JSON 
-                await httpContext.Response.WriteAsync(
-                    JsonSerializer.Serialize(response)
-                );
+                await httpContext.Response.WriteAsJsonAsync(response);
+
             }
         }
     }

@@ -85,7 +85,7 @@ const StyledImgGradient = styled(Box)(({ theme }) => ({
 
 const StyledRightGrid = styled(Grid)(({ theme }) => ({
   backgroundColor: "#f6f7f9",
-  padding: theme.spacing(8),
+  padding: theme.spacing(4),
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(3),
   },
