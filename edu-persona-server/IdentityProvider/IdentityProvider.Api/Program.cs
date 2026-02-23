@@ -19,7 +19,11 @@ builder.Services.AddInfrastructure();
 
 builder.Services.AddBusiness();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy =
+        System.Text.Json.JsonNamingPolicy.CamelCase;
+}); ;
 
 //Swagger
 builder.Services.AddSwaggerWithJwt();
@@ -45,7 +49,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3005, http://localhost:3006")
+            policy.WithOrigins("http://localhost:3005", "http://localhost:3006")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
@@ -70,11 +74,12 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors("AllowFrontend");
+
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AddCors");
 
 app.MapControllers();
 

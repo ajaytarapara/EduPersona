@@ -5,14 +5,20 @@ import { CssBaseline } from "@mui/material";
 import App from "./App";
 import { lightTheme, darkTheme } from "../theme";
 import { ThemeContextProvider, useTheme } from "./contexts";
+import { BrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Root() {
   const { theme } = useTheme();
   return (
-    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+        <CssBaseline />
+        <App />
+        <ToastContainer position="top-right" autoClose={3000} />
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 
