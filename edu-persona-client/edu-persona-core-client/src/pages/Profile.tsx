@@ -1,17 +1,15 @@
-import { Box } from "@mui/material";
-import { testAccess } from "../api";
-import { useEffect } from "react";
+import { Box, Skeleton } from "@mui/material";
+import { useState } from "react";
 
 const ProfilePage = () => {
-  const fetch = async () => {
-    await testAccess();
-  };
-  useEffect(() => {
-    fetch();
-  }, []);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   return (
     <Box>
-      <h4>this is profile page</h4>
+      {!isLoading ? (
+        <h4>this is profile page</h4>
+      ) : (
+        <Skeleton variant="rectangular" width={210} height={118} />
+      )}
     </Box>
   );
 };
