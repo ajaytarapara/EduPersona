@@ -3,6 +3,7 @@ using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Shared.Constants;
 using EduPersona.Core.Shared.Models.ExternalApiResponse;
 using EduPersona.Core.Shared.Models.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static EduPersona.Core.Shared.ExceptionHandler.SpecificExceptions;
 
@@ -41,15 +42,15 @@ namespace EduPersona.Core.Api.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(15),
             });
 
             Response.Cookies.Append("refresh_token", result.Data.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(7),
             });
 
@@ -84,9 +85,9 @@ namespace EduPersona.Core.Api.Controllers
             Response.Cookies.Append("access_token", result.Data, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = false,
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddMinutes(60),
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(15),
             });
 
             return Success(Messages.RequestSuccessful);
@@ -99,6 +100,12 @@ namespace EduPersona.Core.Api.Controllers
             Response.Cookies.Delete("access_token");
             Response.Cookies.Delete("refresh_token");
             return Success(Messages.SuccessfullyMessage("Logout"));
+        }
+        [Authorize(Roles = "User")]
+        [HttpGet]
+        public async Task<IActionResult> Test()
+        {
+            return Success("Hello", Messages.RequestSuccessful);
         }
     }
 }

@@ -35,6 +35,11 @@ builder.Services.AddBusiness();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("CorsPolicy", policy => policy.WithOrigins("http://localhost:3005").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -48,7 +53,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("CorsPolicy");
+
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

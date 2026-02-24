@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { PASSWORD_REGEX, VALIDATION_MESSAGES } from "..";
+import { PASSWORD_REGEX, VALIDATION_MESSAGES } from "../constants";
 
 export const registerSchema = Yup.object({
   firstName: Yup.string()
@@ -23,4 +23,16 @@ export const registerSchema = Yup.object({
   confirmPassword: Yup.string()
     .required(VALIDATION_MESSAGES.CONFIRM_PASSWORD_REQUIRED)
     .oneOf([Yup.ref("password")], VALIDATION_MESSAGES.PASSWORD_MISMATCH),
+});
+
+export const loginSchema = Yup.object({
+  email: Yup.string()
+    .required(VALIDATION_MESSAGES.EMAIL_REQUIRED)
+    .email(VALIDATION_MESSAGES.INVALID_EMAIL)
+    .max(100, VALIDATION_MESSAGES.EMAIL_MAX),
+
+  password: Yup.string()
+    .required(VALIDATION_MESSAGES.PASSWORD_REQUIRED)
+    .min(6, VALIDATION_MESSAGES.PASSWORD_MIN)
+    .matches(PASSWORD_REGEX, VALIDATION_MESSAGES.PASSWORD_PATTERN),
 });

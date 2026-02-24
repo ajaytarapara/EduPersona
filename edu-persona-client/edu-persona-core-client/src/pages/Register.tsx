@@ -16,11 +16,11 @@ import {
 } from "@mui/icons-material";
 import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { AuthLayout } from "../components/ui";
+import { AuthLayout, EduPersonaLogo } from "../components/ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CustomButton, InputField } from "../components";
-import { registerSchema, Routes, type IRegisterPayload } from "../utils";
+import { registerSchema, AppRoutes, type IRegisterPayload } from "../utils";
 import { registerUser } from "../api";
 
 const steps = ["Basic Info", "Security"];
@@ -64,7 +64,7 @@ const RegisterPage = () => {
   const onSubmit = async (data: IRegisterPayload) => {
     const response = await registerUser(data);
     if (response.success) {
-      navigate(Routes.Login);
+      navigate(AppRoutes.Login);
     }
   };
 
@@ -74,6 +74,12 @@ const RegisterPage = () => {
       leftSubtitle="Create your account and start your journey toward academic excellence."
       authForm={
         <StyledFormContainer>
+          <StyledLogoBox>
+            <EduPersonaLogo
+              color="text.primary"
+              bgColor="rgba(15,23,42,0.15)"
+            />
+          </StyledLogoBox>
           <Typography variant="h4" fontWeight={700}>
             Create Account
           </Typography>
@@ -212,7 +218,7 @@ const RegisterPage = () => {
             mt="20px"
           >
             Already have an account?{" "}
-            <StyledSpan onClick={() => navigate(Routes.Login)}>
+            <StyledSpan onClick={() => navigate(AppRoutes.Login)}>
               Login
             </StyledSpan>
           </Typography>
@@ -243,4 +249,15 @@ const StyledForm = styled("form")({
 const StyledSpan = styled("span")(({ theme }) => ({
   color: theme.palette.primary.main,
   fontWeight: 600,
+  cursor: "pointer",
+}));
+
+const StyledLogoBox = styled(Box)(({ theme }) => ({
+  display: "none",
+  padding: theme.spacing(4),
+  [theme.breakpoints.down("md")]: {
+    display: "flex",
+    marginBottom: theme.spacing(2),
+    padding: 0,
+  },
 }));

@@ -21,15 +21,6 @@ namespace IdentityProvider.Api.Controllers
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             IdpLoginResponse response = await _loginService.LoginAsync(loginRequest);
-
-            Response.Cookies.Append("session_id", response.SessionId.ToString(), new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddHours(8),
-            });
-
             return Success(response, ApiMessages.RequestSuccessful);
         }
 
