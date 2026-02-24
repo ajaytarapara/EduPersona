@@ -12,24 +12,49 @@ import {
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { FormProvider, useForm } from "react-hook-form";
-import { AuthLayout } from "../components/ui";
+import { AuthLayout, EduPersonaLogo } from "../components/ui";
 import { useState } from "react";
 import { GoogleIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
-import { Routes } from "../utils";
+import { loginSchema, Roles, AppRoutes, type ILoginPayload } from "../utils";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginUser, validateSession } from "../api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isPwdVisible, setIsPwdVisible] = useState<boolean>(false);
-  const methods = useForm({
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const methods = useForm<ILoginPayload>({
     defaultValues: {
       email: "",
       password: "",
     },
+    resolver: yupResolver(loginSchema),
+    mode: "onTouched",
   });
   const handlePwdVisibility = () => {
     setIsPwdVisible(!isPwdVisible);
   };
+
+  const onSubmit = async (data: ILoginPayload) => {
+    setIsLoading(true);
+    const response = await loginUser(data);
+    if (response.success) {
+      const sessionId = response.data?.sessionId;
+      const validateSessionResponse = await validateSession(sessionId || 0);
+      setIsLoading(false);
+      if (validateSessionResponse.success) {
+        localStorage.setItem("sessionId", sessionId?.toString() || "");
+        localStorage.setItem("role", validateSessionResponse.data?.role || "");
+        if (validateSessionResponse.data?.role === Roles.USER) {
+          navigate(AppRoutes.Profile);
+        } else {
+          navigate(AppRoutes.Admin);
+        }
+      }
+    }
+  };
+
   return (
     <>
       <AuthLayout
@@ -37,6 +62,12 @@ const LoginPage = () => {
         leftTitle="Unlock Your Academic Potential"
         authForm={
           <StyledFormContainer>
+            <StyledLogoBox>
+              <EduPersonaLogo
+                color="text.primary"
+                bgColor="rgba(15,23,42,0.15)"
+              />
+            </StyledLogoBox>
             <Typography variant="h4" fontSize="2rem" fontWeight={700}>
               Welcome back
             </Typography>
@@ -44,7 +75,7 @@ const LoginPage = () => {
               Sign in to continue your learning journey
             </Typography>
             <FormProvider {...methods}>
-              <StyledForm onSubmit={methods.handleSubmit(console.log)}>
+              <StyledForm onSubmit={methods.handleSubmit(onSubmit)}>
                 <InputField
                   name="email"
                   label="Email Address"
@@ -75,8 +106,9 @@ const LoginPage = () => {
                 <CustomButton
                   variant="contained"
                   endIcon={<LoginOutlined />}
-                  loading={false}
+                  loading={isLoading}
                   fullWidth
+                  type="submit"
                 >
                   Sign In
                 </CustomButton>
@@ -100,7 +132,7 @@ const LoginPage = () => {
               Don't have an account?{" "}
               <StyledSpan
                 color="text.primary"
-                onClick={() => navigate(Routes.Register)}
+                onClick={() => navigate(AppRoutes.Register)}
               >
                 Create one
               </StyledSpan>
@@ -131,6 +163,7 @@ const StyledForm = styled(`form`)({
 const StyledSpan = styled(`span`)(({ theme }) => ({
   color: theme.palette.primary.main,
   fontWeight: 600,
+  cursor: "pointer",
 }));
 
 const StyledGoogleButton = styled(CustomButton)({
@@ -145,3 +178,13 @@ const StyledGoogleButton = styled(CustomButton)({
     boxShadow: "none",
   },
 });
+
+const StyledLogoBox = styled(Box)(({ theme }) => ({
+  display: "none",
+  padding: theme.spacing(4),
+  [theme.breakpoints.down("md")]: {
+    display: "flex",
+    marginBottom: theme.spacing(2),
+    padding: 0,
+  },
+}));
