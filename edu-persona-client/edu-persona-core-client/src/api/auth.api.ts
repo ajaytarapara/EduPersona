@@ -48,8 +48,3 @@ export const refreshAccessToken = async (): Promise<IApiResponse<null>> => {
   );
   return response.data;
 };
-
-export const testAccess = async (): Promise<IApiResponse<string>> => {
-  const response = await coreApiInstance.get<IApiResponse<string>>(`/Auth`);
-  return response.data;
-};

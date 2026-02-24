@@ -1,6 +1,8 @@
-import LoginPage from "../../pages/Login";
-import RegisterPage from "../../pages/Register";
+import { lazy } from "react";
 import { AppRoutes } from "../../utils";
+
+const LoginPage = lazy(() => import("../../pages/Login"));
+const RegisterPage = lazy(() => import("../../pages/Register"));
 
 export const PublicAppRoutesConfig = [
   { path: AppRoutes.Login, element: <LoginPage /> },

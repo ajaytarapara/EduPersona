@@ -13,16 +13,17 @@ import {
 } from "@mui/icons-material";
 import { FormProvider, useForm } from "react-hook-form";
 import { AuthLayout, EduPersonaLogo } from "../components/ui";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GoogleIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, Roles, AppRoutes, type ILoginPayload } from "../utils";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginUser, testAccess, validateSession } from "../api";
+import { loginUser, validateSession } from "../api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [isPwdVisible, setIsPwdVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const methods = useForm<ILoginPayload>({
     defaultValues: {
       email: "",
@@ -36,10 +37,12 @@ const LoginPage = () => {
   };
 
   const onSubmit = async (data: ILoginPayload) => {
+    setIsLoading(true);
     const response = await loginUser(data);
     if (response.success) {
       const sessionId = response.data?.sessionId;
       const validateSessionResponse = await validateSession(sessionId || 0);
+      setIsLoading(false);
       if (validateSessionResponse.success) {
         localStorage.setItem("sessionId", sessionId?.toString() || "");
         localStorage.setItem("role", validateSessionResponse.data?.role || "");
@@ -103,7 +106,7 @@ const LoginPage = () => {
                 <CustomButton
                   variant="contained"
                   endIcon={<LoginOutlined />}
-                  loading={false}
+                  loading={isLoading}
                   fullWidth
                   type="submit"
                 >

@@ -101,11 +101,5 @@ namespace EduPersona.Core.Api.Controllers
             Response.Cookies.Delete("refresh_token");
             return Success(Messages.SuccessfullyMessage("Logout"));
         }
-        [Authorize(Roles = "User")]
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            return Success("Hello", Messages.RequestSuccessful);
-        }
     }
 }

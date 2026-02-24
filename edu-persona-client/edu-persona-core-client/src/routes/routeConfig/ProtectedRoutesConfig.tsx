@@ -1,6 +1,8 @@
-import AdminPage from "../../pages/AdminPage";
-import ProfilePage from "../../pages/Profile";
+import { lazy } from "react";
 import { Roles, AppRoutes } from "../../utils";
+
+const ProfilePage = lazy(() => import("../../pages/Profile"));
+const AdminPage = lazy(() => import("../../pages/AdminPage"));
 
 export const ProtectedRoutesConfig = [
   {
