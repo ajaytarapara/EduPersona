@@ -3,6 +3,7 @@ import "./App.css";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import { Routes } from "./utils";
+import GoogleCallbackPage from "./pages/GoogleCallbackPage";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path={Routes.Login} element={<LoginPage />} />
         <Route path={Routes.Register} element={<RegisterPage />} />
         <Route path={Routes.Home} element={<LoginPage />} />
+        <Route path="/auth/google-callback" element={<GoogleCallbackPage />} />
       </Routers>
     </>
   );

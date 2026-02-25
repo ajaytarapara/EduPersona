@@ -1,3 +1,4 @@
+using Google.Apis.Auth;
 using IdentityProvider.Data.Entities;
 using IdentityProvider.Shared.Models.Request;
 using IdentityProvider.Shared.Models.Response;
@@ -10,5 +11,6 @@ namespace IdentityProvider.Business.IServices
         Task<string> GetAccessTokenAsync(string refreshToken);
         Task<LoginResponse> ValidateSessionAsync(int sessionId);
         Task LogoutAsync(int sessionId);
+        Task<IdpLoginResponse> GoogleLoginAsync(string code);
     }
 }
