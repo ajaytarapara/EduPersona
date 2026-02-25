@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
@@ -8,24 +7,29 @@ import { ThemeContextProvider, useTheme } from "./contexts";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./store";
 
 function Root() {
   const { theme } = useTheme();
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-        <CssBaseline />
-        <App />
-        <ToastContainer position="top-right" autoClose={3000} />
-      </ThemeProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <BrowserRouter>
+          <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+            <CssBaseline />
+            <App />
+            <ToastContainer position="top-right" autoClose={3000} />
+          </ThemeProvider>
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   );
 }
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeContextProvider>
-      <Root />
-    </ThemeContextProvider>
-  </StrictMode>
+  <ThemeContextProvider>
+    <Root />
+  </ThemeContextProvider>
 );

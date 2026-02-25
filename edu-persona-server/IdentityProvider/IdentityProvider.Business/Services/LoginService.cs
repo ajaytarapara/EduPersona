@@ -1,4 +1,5 @@
 using AutoMapper;
+using Google.Apis.Auth;
 using IdentityProvider.Business.IServices;
 using IdentityProvider.Data.Entities;
 using IdentityProvider.Shared.Constants;
@@ -8,6 +9,7 @@ using IdentityProvider.Shared.Models.Request;
 using IdentityProvider.Shared.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 using static IdentityProvider.Shared.ExceptionHandler.SpecificExceptions;
 
 namespace IdentityProvider.Business.Services
@@ -124,6 +126,133 @@ namespace IdentityProvider.Business.Services
             await _unitOfWork.RefreshTokenRepository.UpdateAsync(refreshToken);
 
             await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<IdpLoginResponse> GoogleLoginAsync(string code)
+        {
+            var googleToken = await ExchangeCodeAsync(code);
+
+            var payload = await ValidateGoogleTokenAsync(googleToken.id_token);
+
+            var user = await GetOrCreateGoogleUserAsync(payload);
+
+            return await CreateOrReuseSessionAsync(user.Id);
+        }
+
+        private async Task<GoogleTokenResponse> ExchangeCodeAsync(string code)
+        {
+            var clientId = _configuration["GoogleAuth:ClientId"];
+            var clientSecret = _configuration["GoogleAuth:ClientSecret"];
+            var redirectUri = _configuration["GoogleAuth:RedirectUri"];
+
+            using var httpClient = new HttpClient();
+
+            var values = new Dictionary<string, string>
+            {
+                { "code", code },
+                { "client_id", clientId! },
+                { "client_secret", clientSecret! },
+                { "redirect_uri", redirectUri! },
+                { "grant_type", GoogleAuthConstants.GrantType }
+            };
+
+            var response = await httpClient.PostAsync(
+                GoogleAuthConstants.TokenEndpoint,
+                new FormUrlEncodedContent(values));
+
+            if (!response.IsSuccessStatusCode)
+                throw new BadRequestException(ApiMessages.TokenExchangeFailed);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<GoogleTokenResponse>(json);
+
+            if (result == null || string.IsNullOrEmpty(result.id_token))
+                throw new BadRequestException(ApiMessages.InvalidTokenResponse);
+
+            return result;
+        }
+
+        private async Task<GoogleJsonWebSignature.Payload> ValidateGoogleTokenAsync(string idToken)
+        {
+            var clientId = _configuration["GoogleAuth:ClientId"];
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(
+                idToken,
+                new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new[] { clientId }
+                });
+
+            if (!payload.EmailVerified)
+                throw new BadRequestException(ApiMessages.EmailNotVerified);
+
+            return payload;
+        }
+
+        private async Task<User> GetOrCreateGoogleUserAsync(GoogleJsonWebSignature.Payload payload)
+        {
+            string email = payload.Email;
+            string googleId = payload.Subject;
+
+            var user = await GetFirstOrDefaultAsync(
+                x => x.GoogleId == googleId || x.Email == email,
+                query => query.Include(x => x.Role));
+
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = email,
+                    GoogleId = googleId,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    RoleId = 2,
+                    FirstName=payload.Name.Split(" ")[0],
+                    LastName =payload.Name.Split(" ")[1]
+                }; 
+
+                await AddAsync(user);
+                await _unitOfWork.SaveAsync();
+
+                return user;
+            }
+
+            if (!string.IsNullOrEmpty(user.GoogleId) &&
+                user.GoogleId != googleId)
+                throw new BadRequestException(ApiMessages.AccountMismatch);
+
+            if (string.IsNullOrEmpty(user.GoogleId))
+            {
+                user.GoogleId = googleId;
+                await _unitOfWork.SaveAsync();
+            }
+
+            return user;
+        }
+
+        private async Task<IdpLoginResponse> CreateOrReuseSessionAsync(int userId)
+        {
+            var storedSession =
+                await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(
+                    x => x.UserId == userId &&
+                         x.IsActive &&
+                         x.ExpiredAt > DateTime.UtcNow);
+
+            if (storedSession == null)
+            {
+                var session = await CreateSession(userId);
+
+                return new IdpLoginResponse
+                {
+                    SessionId = session.Id
+                };
+            }
+
+            return new IdpLoginResponse
+            {
+                SessionId = storedSession.Id
+            };
         }
 
         private async Task<string> GenerateAccessToken(User user)

@@ -53,5 +53,13 @@ namespace IdentityProvider.Api.Controllers
             Response.Cookies.Delete("session_id");
             return Success(ApiMessages.SuccessfullyMessage("Logout"));
         }
+
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            IdpLoginResponse? response = await _loginService.GoogleLoginAsync(request.Code);
+
+            return Success(response, ApiMessages.RequestSuccessful);
+        }
     }
 }
