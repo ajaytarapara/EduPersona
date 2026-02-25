@@ -11,9 +11,9 @@ namespace IdentityProvider.Api.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HelpDesk API",
+                    Title = "Identity Provider",
                     Version = "v1",
-                    Description = "HelpDesk Support System API"
+                    Description = "Identity Provider API"
                 });
 
                 // Add JWT support
