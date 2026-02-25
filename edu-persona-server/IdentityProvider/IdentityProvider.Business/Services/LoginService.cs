@@ -206,8 +206,11 @@ namespace IdentityProvider.Business.Services
                     Email = email,
                     GoogleId = googleId,
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow
-                };
+                    CreatedAt = DateTime.UtcNow,
+                    RoleId = 2,
+                    FirstName=payload.Name.Split(" ")[0],
+                    LastName =payload.Name.Split(" ")[1]
+                }; 
 
                 await AddAsync(user);
                 await _unitOfWork.SaveAsync();

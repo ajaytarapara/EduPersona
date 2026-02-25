@@ -1,7 +1,7 @@
 import axios from "axios";
 import type { AxiosError, AxiosInstance } from "axios";
 import { toast } from "react-toastify";
-import { CORE_ENDPOINT, IDPS_ENDPOINT, type IApiResponse } from "../utils";
+import { type IApiResponse } from "../utils";
 import { refreshAccessToken } from "./auth.api";
 
 //Refresh token

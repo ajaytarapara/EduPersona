@@ -23,9 +23,7 @@ function Root() {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeContextProvider>
-      <Root />
-    </ThemeContextProvider>
-  </StrictMode>
+  <ThemeContextProvider>
+    <Root />
+  </ThemeContextProvider>
 );
