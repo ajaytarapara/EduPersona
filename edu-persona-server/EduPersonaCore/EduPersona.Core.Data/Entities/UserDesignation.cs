@@ -20,6 +20,9 @@ namespace EduPersona.Core.Data.Entities
         [ForeignKey(nameof(TargetDesignationId))]
         public Designation? TargetDesignation { get; set; }
 
-        public bool IsCurrent { get; set; }
+        public int ProfessionId { get; set; }
+
+        [ForeignKey(nameof(ProfessionId))]
+        public Profession? Profession { get; set; }
     }
 }
