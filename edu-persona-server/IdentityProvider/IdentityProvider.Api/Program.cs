@@ -17,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddInfrastructure();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddBusiness();
 
 builder.Services.AddControllers().AddJsonOptions(options =>

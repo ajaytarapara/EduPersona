@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityProvider.Data.Entities;
 using IdentityProvider.Shared.Models.Request;
+using IdentityProvider.Shared.Models.Response;
 
 namespace IdentityProvider.Business.MappingProfile
 {
@@ -17,6 +18,8 @@ namespace IdentityProvider.Business.MappingProfile
             .ForMember(d => d.UserName, o => o.MapFrom(s => s.FirstName + " " + s.LastName))
             .ForMember(d => d.Role, o => o.MapFrom(s => s.Role.Name));
 
+            CreateMap<User, BasicProfileResponse>()
+             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role != null ? src.Role.Name : null));
         }
     }
 }
