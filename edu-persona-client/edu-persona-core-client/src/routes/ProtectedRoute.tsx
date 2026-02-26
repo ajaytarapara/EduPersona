@@ -1,13 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { AppRoutes } from "../utils";
+import { useAppSelector } from "../store/hook";
 
 interface IProtectedRouteProps {
   allowedRoles: string[];
 }
 
 const ProtectedRoutes = ({ allowedRoles }: IProtectedRouteProps) => {
-  const userRole = localStorage.getItem("role");
-  if (!userRole) {
+  const { userInfo } = useAppSelector((state) => state.auth);
+  const userRole = userInfo.role || "";
+  if (!userInfo) {
     return <Navigate to={AppRoutes.Login} replace />;
   }
   if (allowedRoles && !allowedRoles.includes(userRole)) {

@@ -4,9 +4,12 @@ import { validateSession, googleLogin } from "../api";
 import { AppRoutes, Roles } from "../utils";
 import { Box, Typography } from "@mui/material";
 import FallbackLoader from "../components/common/FallbackLoader";
+import { setSession } from "../store/features";
+import { useAppDispatch } from "../store/hook";
 
 const GoogleCallbackPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const loginWithGoogle = async () => {
@@ -22,8 +25,11 @@ const GoogleCallbackPage = () => {
         const loginResponse = await googleLogin(code);
         const sessionId = loginResponse.data.sessionId;
         const validateResponse = await validateSession(sessionId);
-        localStorage.setItem("sessionId", sessionId?.toString() || "");
-        localStorage.setItem("role", validateResponse?.data?.role || "");
+        const userInfo = {
+          userName: validateResponse.data?.userName || "",
+          role: validateResponse.data?.role || "",
+        };
+        dispatch(setSession({ userInfo: userInfo, sessionId: sessionId }));
         if (validateResponse?.data?.role === Roles.USER) {
           navigate(AppRoutes.Profile);
         } else {
@@ -47,7 +53,7 @@ const GoogleCallbackPage = () => {
       gap={3}
       bgcolor="background.default"
     >
-      <FallbackLoader/>
+      <FallbackLoader />
       <Typography
         variant="h6"
         color="text.primary"

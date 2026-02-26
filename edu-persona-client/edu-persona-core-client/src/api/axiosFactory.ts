@@ -3,6 +3,14 @@ import type { AxiosError, AxiosInstance } from "axios";
 import { toast } from "react-toastify";
 import { type IApiResponse } from "../utils";
 import { refreshAccessToken } from "./auth.api";
+import type { AppStore } from "../store";
+import { hideLoader, showLoader } from "../store/features";
+
+let storeRef: AppStore | null = null;
+
+export const injectStore = (store: AppStore) => {
+  storeRef = store;
+};
 
 //Refresh token
 type FailedRequest = {
@@ -48,10 +56,12 @@ export const createAxiosInstance = (baseURL: string): AxiosInstance => {
   // Request Interceptor
   axiosInstance.interceptors.request.use(
     (config) => {
+      storeRef?.dispatch(showLoader());
       return config;
     },
     (error) => {
       toast.error("Failed to send request!");
+      storeRef?.dispatch(hideLoader());
       return Promise.reject(error);
     }
   );
@@ -59,7 +69,7 @@ export const createAxiosInstance = (baseURL: string): AxiosInstance => {
   axiosInstance.interceptors.response.use(
     (response) => {
       const apiResponse = response.data as IApiResponse<unknown>;
-
+      storeRef?.dispatch(hideLoader());
       if (
         apiResponse.success &&
         apiResponse.message &&
@@ -71,6 +81,7 @@ export const createAxiosInstance = (baseURL: string): AxiosInstance => {
       return response;
     },
     async (error) => {
+      storeRef?.dispatch(hideLoader());
       const apiError = error.response?.data;
 
       const originalRequest = error.config;

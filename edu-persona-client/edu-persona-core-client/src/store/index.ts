@@ -1,16 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { authReducer } from "./features";
-
-let storeRef: AppStore | null = null;
-
-export const injectStore = (store: AppStore) => {
-  storeRef = store;
-};
+import { authReducer, loaderReducer } from "./features";
+import { injectStore } from "../api/axiosFactory";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  loader: loaderReducer,
 });
 
 const persistConfig = {

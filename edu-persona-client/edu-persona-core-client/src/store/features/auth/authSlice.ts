@@ -1,13 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { IAuthState } from "../../../utils";
 
-interface AuthState {
-  role: string | null;
-  sessionId: string | null;
-}
-
-const initialState: AuthState = {
-  role: "",
-  sessionId: "",
+const initialState: IAuthState = {
+  userInfo: {
+    userName: "",
+    role: "",
+  },
+  sessionId: null,
 };
 
 const authSlice = createSlice({
@@ -16,17 +15,20 @@ const authSlice = createSlice({
   reducers: {
     setSession: (
       state,
-      action: PayloadAction<{ role: string; sessionId: string }>
+      action: PayloadAction<{
+        userInfo: { userName: string; role: string };
+        sessionId: number;
+      }>
     ) => {
-      state.role = action.payload.role;
+      state.userInfo = action.payload.userInfo;
       state.sessionId = action.payload.sessionId;
     },
     logout: (state) => {
-      state.role = null;
+      state.userInfo = { userName: "", role: "" };
       state.sessionId = null;
     },
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setSession } = authSlice.actions;
 export const authReducer = authSlice.reducer;
