@@ -5,7 +5,10 @@ namespace EduPersona.Core.Data.Entities
 {
     public class UserSkill : AuditEntity
     {
-        public int UserId { get; set; }
+        public int UserProfileId { get; set; }
+
+        [ForeignKey(nameof(UserProfileId))]
+        public UserProfile? UserProfile { get; set; }
 
         public int SkillId { get; set; }
 
