@@ -20,19 +20,19 @@ namespace EduPersona.Core.Api.Controllers
             _userProfileService = userProfileService;
         }
 
-        [HttpGet("check-profile-completed/")]
-        public async Task<IActionResult> CheckIsProfileCompleted()
-        {
-            bool isProfileCompleted = await _userProfileService.CheckIsProfileCompletedAsync();
-            return Success(isProfileCompleted, Messages.RequestSuccessful);
-        }
+        //[HttpGet("check-profile-completed/")]
+        //public async Task<IActionResult> CheckIsProfileCompleted()
+        //{
+        //    bool isProfileCompleted = await _userProfileService.CheckIsProfileCompletedAsync();
+        //    return Success(isProfileCompleted, Messages.RequestSuccessful);
+        //}
 
-        [HttpPut("update-profile/{userID}")]
-        public async Task<IActionResult> UpdateUseProfile(int userID, [FromBody] UserProfileRequest userProfileRequest)
-        {
-            await _userProfileService.UpdateUserProfileAsync(userID, userProfileRequest);
-            return Success(Messages.UpdateSuccessfullyMessage("UserProfile"));
-        }
+        //[HttpPut("update-profile/{userID}")]
+        //public async Task<IActionResult> UpdateUseProfile(int userID, [FromBody] UserProfileRequest userProfileRequest)
+        //{
+        //    await _userProfileService.UpdateUserProfileAsync(userID, userProfileRequest);
+        //    return Success(Messages.UpdateSuccessfullyMessage("UserProfile"));
+        //}
 
     }
 }

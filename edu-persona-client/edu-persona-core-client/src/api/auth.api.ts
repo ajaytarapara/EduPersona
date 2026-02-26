@@ -53,3 +53,8 @@ export const googleLogin = async (code: string) => {
   const response = await ipdsApiInstance.post("/login/google-login", { code });
   return response.data;
 };
+
+export const testAccess = async () => {
+  const response = await ipdsApiInstance.get("/Profile");
+  return response.data;
+};

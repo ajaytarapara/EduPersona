@@ -16,6 +16,8 @@
         public const string InvalidTokenResponse = "Invalid Google token response.";
         public const string EmailNotVerified = "Google email not verified.";
         public const string AccountMismatch = "Google account mismatch.";
+        public static readonly Func<string, string> NotActive = (entityName) => $"{entityName} is not active.";
+        public const string GoogleUserNotAbleToUpdate = "";
     }
 
     public static class GoogleAuthConstants

@@ -18,7 +18,7 @@ import { GoogleIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, Roles, AppRoutes, type ILoginPayload } from "../utils";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginUser, validateSession } from "../api";
+import { loginUser, testAccess, validateSession } from "../api";
 import { useAppDispatch } from "../store/hook";
 import { setSession } from "../store/features";
 
@@ -40,6 +40,10 @@ const LoginPage = () => {
     setIsPwdVisible(!isPwdVisible);
   };
 
+  const test = async () => {
+    await testAccess();
+  };
+
   const onSubmit = async (data: ILoginPayload) => {
     const response = await loginUser(data);
     if (response.success) {
@@ -51,6 +55,7 @@ const LoginPage = () => {
           role: validateSessionResponse.data?.role || "",
         };
         dispatch(setSession({ userInfo: userInfo, sessionId: sessionId }));
+        test();
         if (validateSessionResponse.data?.role === Roles.USER) {
           navigate(AppRoutes.Profile);
         } else {

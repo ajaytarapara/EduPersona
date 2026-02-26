@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using IdentityProvider.Business.IServices;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace IdentityProvider.Business.Extension
@@ -22,7 +23,7 @@ namespace IdentityProvider.Business.Extension
                     services.AddScoped(interfaceType, implementation);
                 }
             }
-
+         
             return services;
         }
     }
