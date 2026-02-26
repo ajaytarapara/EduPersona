@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using EduPersona.Core.Data.Extension;
 using EduPersona.Core.Business.Extension;
 using EduPersona.Core.Api.Extensions;
+using EduPersona.Core.Business.MappingProfile;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +35,10 @@ builder.Services.AddBusiness();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+//mapper 
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(option =>
@@ -44,6 +50,11 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
+using (var scope = app.Services.CreateScope())
+{
+    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+    mapper.ConfigurationProvider.AssertConfigurationIsValid();
+}
 
 if (app.Environment.IsDevelopment())
 {

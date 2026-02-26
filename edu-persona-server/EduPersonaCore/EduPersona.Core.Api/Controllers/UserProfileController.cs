@@ -28,9 +28,9 @@ namespace EduPersona.Core.Api.Controllers
         }
 
         [HttpPut("update-profile/{userID}")]
-        public async Task<IActionResult> UpdateUseProfile(int userID, [FromBody] UserProfileRequest userProfileRequest)
+        public async Task<IActionResult> UpdateUseProfile([FromBody] UserProfileRequest userProfileRequest)
         {
-            await _userProfileService.UpdateUserProfileAsync(userID, userProfileRequest);
+            await _userProfileService.CompleteUserProfileAsync(userProfileRequest);
             return Success(Messages.UpdateSuccessfullyMessage("UserProfile"));
         }
 
