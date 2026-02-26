@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace IdentityProvider.Shared.Constants
 {
-    internal class Enums
+    public  class Enums
     {
+        public enum Roles
+        {
+            Admin = 1,
+            User = 2
+        }
     }
 }

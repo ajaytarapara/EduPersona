@@ -4,13 +4,13 @@ using IdentityProvider.Shared.Models.Request;
 using IdentityProvider.Shared.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using static IdentityProvider.Shared.Constants.Enums;
 
 namespace IdentityProvider.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize (Roles = nameof(Roles.User))]
     public class ProfileController : BaseApiController
     {
         private readonly IProfileService _profileService;
