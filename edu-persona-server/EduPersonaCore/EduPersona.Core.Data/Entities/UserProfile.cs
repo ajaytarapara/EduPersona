@@ -5,7 +5,7 @@ namespace EduPersona.Core.Data.Entities
 {
     public class UserProfile : AuditEntity
     {
-        public int? userId { get; set; }
+        public int? UserId { get; set; }
 
         public DateOnly? Birthdate { get; set; }
 

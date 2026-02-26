@@ -13,19 +13,19 @@ namespace EduPersona.Core.Api.Controllers
     [Route("api/[controller]")]
     public class UserProfileController : BaseApiController
     {
-        private IUserProfileService _userProfileService;
+        //private IUserProfileService _userProfileService;
 
-        public UserProfileController(IUserProfileService userProfileService)
+        public UserProfileController()
         {
-            _userProfileService = userProfileService;
+            //_userProfileService = userProfileService;
         }
 
-        [HttpGet("check-profile-completed/")]
-        public async Task<IActionResult> CheckIsProfileCompleted()
-        {
-            bool isProfileCompleted = await _userProfileService.CheckIsProfileCompletedAsync();
-            return Success(isProfileCompleted, Messages.RequestSuccessful);
-        }
+        //[HttpGet("check-profile-completed/")]
+        //public async Task<IActionResult> CheckIsProfileCompleted()
+        //{
+        //    bool isProfileCompleted = await _userProfileService.CheckIsProfileCompletedAsync();
+        //    return Success(isProfileCompleted, Messages.RequestSuccessful);
+        //}
 
         [HttpPut("update-profile/{userID}")]
         public async Task<IActionResult> UpdateUseProfile([FromBody] UserProfileRequest userProfileRequest)
