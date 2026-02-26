@@ -23,7 +23,7 @@ namespace IdentityProvider.Api.Extensions
                     OnMessageReceived = context =>
                     {
                         // Read token from HTTP-only cookie
-                        var token = context.Request.Cookies["auth_token"];
+                        var token = context.Request.Cookies["access_token"];
 
                         if (!string.IsNullOrEmpty(token))
                         {

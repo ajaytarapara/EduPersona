@@ -85,8 +85,8 @@ namespace EduPersona.Core.Api.Controllers
             Response.Cookies.Append("access_token", result.Data, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
                 Expires = DateTime.UtcNow.AddMinutes(15),
             });
 
