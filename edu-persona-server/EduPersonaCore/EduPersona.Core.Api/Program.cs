@@ -31,6 +31,9 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddHostedService<MigrationHostedService>();
 
 builder.Services.AddInfrastructure();
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddBusiness();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -50,12 +53,6 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-using (var scope = app.Services.CreateScope())
-{
-    var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-    mapper.ConfigurationProvider.AssertConfigurationIsValid();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -63,6 +60,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseCors("CorsPolicy");
 

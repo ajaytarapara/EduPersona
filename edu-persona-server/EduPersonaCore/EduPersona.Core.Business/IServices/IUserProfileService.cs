@@ -7,5 +7,8 @@ namespace EduPersona.Core.Business.IServices
     {
         Task<bool> CheckIsProfileCompletedAsync();
         Task CompleteUserProfileAsync(UserProfileRequest userProfileRequest);
+        Task UpdateUserProfileAsync(UpdateUserProfileRequest userProfileRequest);
+        Task ChangeProfessionAsync(ChangeProfessionRequest request);
+        Task ChangeDesignationAsync(ChangeDesignationRequest request);
     }
 }

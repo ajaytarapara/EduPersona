@@ -6,17 +6,17 @@ namespace EduPersona.Core.Data.Entities.Abstract
 
         public int CreatedBy { get; set; }
 
-        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset? UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         public int? UpdatedBy { get; set; }
 
-        public DateTimeOffset DeletedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset? DeletedAt { get; set; } = DateTimeOffset.UtcNow;
 
         public int? DeletedBy { get; set; }
 
         public bool IsDeleted { get; set; } = false;
 
-        public bool IsActive { get; set; } = false;
+        public bool IsActive { get; set; } = true;
 
     }
 }

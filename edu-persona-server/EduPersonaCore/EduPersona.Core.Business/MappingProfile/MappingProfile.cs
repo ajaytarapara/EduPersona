@@ -12,15 +12,13 @@ namespace EduPersona.Core.Business.MappingProfile
     {
         public MappingProfile()
         {
-            CreateMap<UserProfileRequest, UserProfile>()
-            .ForMember(d => d.Address, o => o.MapFrom(s => s.Address))
-            .ForMember(d => d.Birthdate, o => o.MapFrom(s => s.Birthdate))
-            .ForMember(d => d.PhoneNo, o => o.MapFrom(s => s.PhoneNo));
+            CreateMap<UserProfileRequest, UserProfile>();
+            CreateMap<UpdateUserProfileRequest, UserProfile>();
 
             CreateMap<UserProfileRequest, UserDesignation>()
-           .ForMember(d => d.CurrentDesignationId, o => o.MapFrom(s => s.CurrentDesignationId))
-           .ForMember(d => d.TargetDesignationId, o => o.MapFrom(s => s.TargetDesignationId))
-           .ForMember(d => d.IsActive, o => o.MapFrom(_ => true));
+                .ForMember(d => d.CurrentDesignationId, o => o.MapFrom(s => s.CurrentDesignationId))
+                .ForMember(d => d.TargetDesignationId, o => o.MapFrom(s => s.TargetDesignationId))
+                .ForMember(d => d.ProfessionId, o => o.MapFrom(s => s.ProfessionId));
         }
     }
 }

@@ -10,6 +10,8 @@
 
         public static readonly Func<string, string> UpdateSuccessfullyMessage = (entityName) => $"{entityName} updated successfully.";
 
+        public const string ProfileCompletedSuccessful = "Profile completed successful.";
+
         public class ErrorMessage
         {
             public static string AtLeastOneSkillMessage = "At least one skill is required.";
@@ -19,6 +21,7 @@
 
             public static readonly Func<string, string> NotExistMessage = (entityName) => $"{entityName} does not exist.";
 
+            public static readonly Func<string, string> NotFoundMessage = (entityName) => $"{entityName} not found.";
             public static string DesignationProfessionMismatch = "Selected designation does not belong to the selected profession.";
 
             public static string SameCurrentAndTargetDesignation = "Current designation and target designation must be different.";
