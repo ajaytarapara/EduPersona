@@ -1,5 +1,6 @@
 ﻿using EduPersona.Core.Data.Entities;
 using EduPersona.Core.Shared.Models.Request;
+using EduPersona.Core.Shared.Models.Response;
 
 namespace EduPersona.Core.Business.IServices
 {
@@ -10,5 +11,7 @@ namespace EduPersona.Core.Business.IServices
         Task UpdateUserProfileAsync(UpdateUserProfileRequest userProfileRequest);
         Task ChangeProfessionAsync(ChangeProfessionRequest request);
         Task ChangeDesignationAsync(ChangeDesignationRequest request);
+        Task<UserProfileResponse> GetCurrentProfileAsync();
+        Task<IEnumerable<ProfileVersionResponse>> GetProfileVersionsAsync();
     }
 }

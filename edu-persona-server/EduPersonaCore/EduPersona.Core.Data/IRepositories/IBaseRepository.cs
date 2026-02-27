@@ -23,7 +23,7 @@ namespace EduPersona.Core.Data.IRepositories
         Task<IEnumerable<T>> GetAllAsync();
 
         // Find with predicate
-        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null);
 
         // Get with includes
         Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>>? predicate = null, Func<IQueryable<T>,

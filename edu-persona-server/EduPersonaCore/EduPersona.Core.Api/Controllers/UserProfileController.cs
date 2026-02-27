@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Shared.Constants;
 using EduPersona.Core.Shared.Models.Request;
+using EduPersona.Core.Shared.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EduPersona.Core.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserProfileController : BaseApiController
@@ -28,7 +30,6 @@ namespace EduPersona.Core.Api.Controllers
             return Success(isProfileCompleted, Messages.RequestSuccessful);
         }
 
-        [Authorize]
         [HttpPost("complete-profile")]
         public async Task<IActionResult> CompleteUseProfile([FromBody] UserProfileRequest userProfileRequest)
         {
@@ -55,6 +56,20 @@ namespace EduPersona.Core.Api.Controllers
         {
             await _userProfileService.ChangeDesignationAsync(request);
             return Success(Messages.UpdateSuccessfullyMessage("Designation"));
+        }
+
+        [HttpGet("get-current-user-profile")]
+        public async Task<IActionResult> GetCurrentProfile()
+        {
+            UserProfileResponse userProfileResponse = await _userProfileService.GetCurrentProfileAsync();
+            return Success(userProfileResponse, Messages.RequestSuccessful);
+        }
+
+        [HttpGet("get-profile-version")]
+        public async Task<IActionResult> GetProfileVersions()
+        {
+            IEnumerable<ProfileVersionResponse> profileVersionResponse = await _userProfileService.GetProfileVersionsAsync();
+            return Success(profileVersionResponse, Messages.RequestSuccessful);
         }
     }
 }
