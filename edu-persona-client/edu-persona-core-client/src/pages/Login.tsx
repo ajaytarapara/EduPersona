@@ -18,7 +18,7 @@ import { GoogleIcon } from "../assets";
 import { useNavigate } from "react-router-dom";
 import { loginSchema, Roles, AppRoutes, type ILoginPayload } from "../utils";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginUser, validateSession } from "../api";
+import { isCompleteProfile, loginUser, validateSession } from "../api";
 import { useAppDispatch } from "../store/hook";
 import { setSession } from "../store/features";
 
@@ -46,11 +46,15 @@ const LoginPage = () => {
       const sessionId = response.data?.sessionId || 0;
       const validateSessionResponse = await validateSession(sessionId);
       if (validateSessionResponse.success) {
+        const profileResponse = await isCompleteProfile();
+        const isProfileCompleted = profileResponse?.data;
         const userInfo = {
           userName: validateSessionResponse.data?.userName || "",
           role: validateSessionResponse.data?.role || "",
+          isProfileCompleted: isProfileCompleted,
         };
         dispatch(setSession({ userInfo: userInfo, sessionId: sessionId }));
+
         if (validateSessionResponse.data?.role === Roles.USER) {
           navigate(AppRoutes.Profile);
         } else {

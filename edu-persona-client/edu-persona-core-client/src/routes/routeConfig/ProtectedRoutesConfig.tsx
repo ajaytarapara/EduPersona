@@ -3,6 +3,7 @@ import { Roles, AppRoutes } from "../../utils";
 
 const ProfilePage = lazy(() => import("../../pages/Profile"));
 const AdminPage = lazy(() => import("../../pages/AdminPage"));
+const CompleteProfilePage = lazy(() => import("../../pages/CompleteProfile"));
 
 export const ProtectedRoutesConfig = [
   {
@@ -14,5 +15,10 @@ export const ProtectedRoutesConfig = [
     path: AppRoutes.Admin,
     element: <AdminPage />,
     allowRoles: [Roles.ADMIN],
+  },
+  {
+    path: AppRoutes.CompleteProfile,
+    element: <CompleteProfilePage />,
+    allowRoles: [Roles.USER],
   },
 ];

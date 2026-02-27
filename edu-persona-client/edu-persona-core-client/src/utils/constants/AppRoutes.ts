@@ -4,4 +4,5 @@ export const AppRoutes = {
   Register: "/register",
   Profile: "/profile",
   Admin: "/admin",
+  CompleteProfile: "/complete-profile",
 };
