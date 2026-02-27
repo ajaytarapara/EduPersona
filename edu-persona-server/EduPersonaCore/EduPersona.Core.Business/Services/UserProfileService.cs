@@ -3,6 +3,7 @@ using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Data.Entities;
 using EduPersona.Core.Shared.Constants;
 using EduPersona.Core.Shared.Models.Request;
+using EduPersona.Core.Shared.Models.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using static EduPersona.Core.Shared.Constants.Messages;
@@ -211,7 +212,7 @@ namespace EduPersona.Core.Business.Services
             // 1. Get active user profile
             UserProfile? userProfile =
                 await GetFirstOrDefaultAsync(
-                    x => x.UserId == currentUserId && x.IsActive);
+                    x => x.UserId == currentUserId && x.IsActive && !x.IsDeleted);
 
             if (userProfile == null)
                 throw new NotFoundException("User profile not found");
@@ -292,10 +293,7 @@ namespace EduPersona.Core.Business.Services
             await _unitOfWork.UserSkillRepository.UpdateRangeAsync(activeSkills);
         }
 
-        private async Task CreateNewSkillsAsync(
-    IEnumerable<int> skillIds,
-    int userProfileId,
-    int currentUserId)
+        private async Task CreateNewSkillsAsync(IEnumerable<int> skillIds, int userProfileId, int currentUserId)
         {
             var newSkills = skillIds.Select(skillId => new UserSkill
             {
@@ -317,7 +315,7 @@ namespace EduPersona.Core.Business.Services
             // 1. Get active user profile
             UserProfile? userProfile =
                 await GetFirstOrDefaultAsync(
-                    x => x.UserId == currentUserId && x.IsActive);
+                    x => x.UserId == currentUserId && x.IsActive && !x.IsDeleted);
 
             if (userProfile == null)
                 throw new NotFoundException(ErrorMessage.NotExistMessage("User profile"));
@@ -325,7 +323,7 @@ namespace EduPersona.Core.Business.Services
             // 2. Get active designation
             UserDesignation? activeDesignation =
                 await _unitOfWork.UserDesignationRepository.GetFirstOrDefaultAsync(
-                    x => x.UserProfileId == userProfile.Id && x.IsActive);
+                    x => x.UserProfileId == userProfile.Id && x.IsActive && !x.IsDeleted);
 
             if (activeDesignation == null)
                 throw new NotFoundException(ErrorMessage.NotFoundMessage("Active designation"));
@@ -360,5 +358,72 @@ namespace EduPersona.Core.Business.Services
             await _unitOfWork.SaveAsync();
         }
         //end update designation
+
+        //get profile
+        public async Task<UserProfileResponse> GetCurrentProfileAsync()
+        {
+            int currentUserId = _currentUserService.GetCurrentUserId();
+
+            // 1. Get active profile
+            UserProfile? userProfile = await GetFirstOrDefaultAsync(x => x.UserId == currentUserId && x.IsActive && !x.IsDeleted);
+
+            if (userProfile == null)
+                throw new NotFoundException(ErrorMessage.NotExistMessage("User profile"));
+
+            // 2. Get active designation
+            UserDesignation? designation = await _unitOfWork.UserDesignationRepository.GetFirstOrDefaultAsync(x => x.UserProfileId == userProfile.Id && x.IsActive && !x.IsDeleted,
+                q => q.Include(x => x.Profession).Include(x => x.TargetDesignation).Include(x => x.CurrentDesignation));
+
+            // 3. Get active skills
+            var skills = await _unitOfWork.UserSkillRepository.FindAsync(x => x.UserProfileId == userProfile.Id && x.IsActive && !x.IsDeleted, query => query.Include(x => x.Skill));
+
+            // 4. Map response
+            var response = _mapper.Map<UserProfileResponse>(userProfile);
+
+            // Manual enrich (business logic)
+            response.ProfessionName = designation?.Profession?.Name ?? "";
+            response.CurrentDesignationName = designation?.CurrentDesignation?.Name ?? "";
+            response.TargetDesignationName = designation?.TargetDesignation?.Name ?? "";
+            response.Skills = skills.Select(x => x.Skill.Name).ToList();
+
+            return response;
+        }
+
+        public async Task<IEnumerable<ProfileVersionResponse>> GetProfileVersionsAsync()
+        {
+            int currentUserId = _currentUserService.GetCurrentUserId();
+
+            // 1. Get profile
+            UserProfile? userProfile = await GetFirstOrDefaultAsync(x => x.UserId == currentUserId && x.IsActive && !x.IsDeleted);
+
+            if (userProfile == null)
+                throw new NotFoundException(ErrorMessage.NotExistMessage("User profile"));
+
+            // 2. Get all designations (versions)
+            var designations =
+                await _unitOfWork.UserDesignationRepository.FindAsync(
+                    x => x.UserProfileId == userProfile.Id, q => q.Include(x => x.CurrentDesignation).Include(x => x.TargetDesignation).Include(x => x.Profession));
+
+            // 3. Get all skills (grouped by version timing)
+            var skills =
+                await _unitOfWork.UserSkillRepository.FindAsync(
+                    x => x.UserProfileId == userProfile.Id, q => q.Include(x => x.Skill));
+
+            var versions = _mapper.Map<List<ProfileVersionResponse>>(designations);
+
+            // Manual skill association (version logic)
+            foreach (var version in versions)
+            {
+                version.Skills = skills
+                    .Where(s =>
+                        s.CreatedAt >= version.CreatedAt &&
+                        s.IsActive == version.IsActive)
+                    .Select(s => s.Skill.Name)
+                    .ToList();
+            }
+
+            return versions.OrderByDescending(x => x.CreatedAt);
+        }
+        //end profile
     }
 }

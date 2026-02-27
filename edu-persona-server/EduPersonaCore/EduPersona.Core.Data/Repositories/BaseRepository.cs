@@ -80,9 +80,15 @@ namespace EduPersona.Core.Data.Repositories
                 return await _dbSet.ToListAsync();
             }
 
-            public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+            public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null)
             {
-                return await _dbSet.Where(predicate).ToListAsync();
+                IQueryable<T> query = _dbSet;
+                if (include != null)
+                    query = include(query);
+                if (predicate != null)
+                    query = query.Where(predicate);
+
+                return await query.ToListAsync();
             }
 
             public async Task<IEnumerable<T>> GetAsync(
