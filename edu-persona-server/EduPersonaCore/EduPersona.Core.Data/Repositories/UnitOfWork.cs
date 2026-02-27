@@ -9,6 +9,16 @@ namespace EduPersona.Core.Data.Repositories
 
         private IUserProfileRepository? _userRepository;
 
+        private IDesignationRepository? _designationRepository;
+
+        private IProfessionRepository? _professionRepository;
+
+        private ISkillRepository? _skillRepository;
+
+        private IUserDesignationRepository? _userDesignationRepository;
+
+        private IUserSkillRepository? _userSkillRepository;
+
         public UnitOfWork(AppDbContext context)
         {
             _context = context;
@@ -23,6 +33,21 @@ namespace EduPersona.Core.Data.Repositories
         // Custom repository
         public IUserProfileRepository UserRepository
             => _userRepository ??= new UserProfileRepository(_context);
+
+        public IDesignationRepository DesignationRepository
+          => _designationRepository ??= new DesignationRepository(_context);
+
+        public IProfessionRepository ProfessionRepository
+        => _professionRepository ??= new ProfessionRepository(_context);
+
+        public ISkillRepository SkillRepository
+          => _skillRepository ??= new SkillRepository(_context);
+
+        public IUserDesignationRepository UserDesignationRepository
+        => _userDesignationRepository ??= new UserDesignationRepository(_context);
+
+        public IUserSkillRepository UserSkillRepository
+          => _userSkillRepository ??= new UserSkillRepository(_context);
 
         public int Save() => _context.SaveChanges();
 

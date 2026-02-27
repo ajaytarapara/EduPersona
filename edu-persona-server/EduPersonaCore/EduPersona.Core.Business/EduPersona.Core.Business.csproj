@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\EduPersona.Core.Data\EduPersona.Core.Data.csproj" />
     <ProjectReference Include="..\EduPersona.Core.Shared\EduPersona.Core.Shared.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
   </ItemGroup>
 
   <PropertyGroup>

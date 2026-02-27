@@ -3,6 +3,7 @@ using System;
 using EduPersona.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EduPersona.Core.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260226114223_updateUserProfile")]
+    partial class updateUserProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -56,7 +59,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("ProfessionId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
@@ -83,7 +86,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -100,7 +103,7 @@ namespace EduPersona.Core.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
@@ -125,7 +128,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -142,7 +145,7 @@ namespace EduPersona.Core.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
@@ -170,7 +173,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CurrentDesignationId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -188,7 +191,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("TargetDesignationId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
@@ -231,7 +234,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -250,7 +253,7 @@ namespace EduPersona.Core.Data.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
@@ -278,7 +281,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("DeletedAt")
+                    b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DeletedBy")
@@ -293,7 +296,7 @@ namespace EduPersona.Core.Data.Migrations
                     b.Property<int>("SkillId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("UpdatedAt")
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")

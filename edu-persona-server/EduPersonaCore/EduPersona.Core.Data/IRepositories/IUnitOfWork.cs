@@ -6,6 +6,16 @@ public interface IUnitOfWork : IDisposable
 
     IUserProfileRepository UserRepository { get; }
 
+    IDesignationRepository DesignationRepository { get; }
+
+    IProfessionRepository ProfessionRepository { get; }
+
+    ISkillRepository SkillRepository { get; }
+
+    IUserDesignationRepository UserDesignationRepository { get; }
+
+    IUserSkillRepository UserSkillRepository { get; }
+
     int Save();
     Task<int> SaveAsync();
 }

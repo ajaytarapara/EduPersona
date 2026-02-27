@@ -7,13 +7,13 @@ namespace EduPersona.Core.Data.Entities
     {
         public int? UserId { get; set; }
 
-        public DateOnly? Birthdate { get; set; }
+        public DateTimeOffset? Birthdate { get; set; }
 
         [MaxLength(255)]
         public string? Address { get; set; }
 
         [MaxLength(10)]
-        public int? PhoneNo { get; set; }
+        public string? PhoneNo { get; set; }
 
         public bool IsProfileCompleted { get; set; } = false;
 
