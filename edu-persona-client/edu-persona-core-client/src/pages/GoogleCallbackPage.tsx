@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { validateSession, googleLogin } from "../api";
+import { validateSession, googleLogin, isCompleteProfile } from "../api";
 import { AppRoutes, Roles } from "../utils";
 import { Box, Typography } from "@mui/material";
 import FallbackLoader from "../components/common/FallbackLoader";
@@ -25,11 +25,18 @@ const GoogleCallbackPage = () => {
         const loginResponse = await googleLogin(code);
         const sessionId = loginResponse.data.sessionId;
         const validateResponse = await validateSession(sessionId);
+        const profileResponse = await isCompleteProfile();
+        const isProfileCompleted = profileResponse?.data;
         const userInfo = {
           userName: validateResponse.data?.userName || "",
           role: validateResponse.data?.role || "",
+          isProfileCompleted: isProfileCompleted,
         };
         dispatch(setSession({ userInfo: userInfo, sessionId: sessionId }));
+        if (!isProfileCompleted) {
+          navigate(AppRoutes.CompleteProfile, { replace: true });
+          return;
+        }
         if (validateResponse?.data?.role === Roles.USER) {
           navigate(AppRoutes.Profile);
         } else {
