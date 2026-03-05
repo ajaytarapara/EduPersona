@@ -23,14 +23,16 @@ const authSlice = createSlice({
     ) => {
       state.userInfo = action.payload.userInfo;
       state.sessionId = action.payload.sessionId;
-
     },
     logout: (state) => {
       state.userInfo = { userName: "", role: "", isProfileCompleted: false };
       state.sessionId = null;
     },
+    setProfileComplete: (state) => {
+      state.userInfo = {...state.userInfo, isProfileCompleted: true };
+    },
   },
 });
 
-export const { logout, setSession } = authSlice.actions;
+export const { logout, setSession,setProfileComplete } = authSlice.actions;
 export const authReducer = authSlice.reducer;

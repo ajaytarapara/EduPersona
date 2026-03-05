@@ -27,6 +27,8 @@
             public static string SameCurrentAndTargetDesignation = "Current designation and target designation must be different.";
 
             public static string DuplicateSkillNotAllowed = "Duplicate skills are not allowed.";
+
+            public static readonly Func<string, string> AlreadyExistsMessage = (entityName) => $"{entityName} already exists.";
         }
 
         public class ModelStateMessage

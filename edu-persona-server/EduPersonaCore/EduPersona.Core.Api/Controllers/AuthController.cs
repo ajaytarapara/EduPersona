@@ -3,7 +3,6 @@ using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Shared.Constants;
 using EduPersona.Core.Shared.Models.ExternalApiResponse;
 using EduPersona.Core.Shared.Models.Response;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static EduPersona.Core.Shared.ExceptionHandler.SpecificExceptions;
 
