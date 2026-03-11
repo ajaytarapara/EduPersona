@@ -95,6 +95,19 @@ const StyledTextField = styled(TextField)({
   "& .MuiInputAdornment-root": {
     color: "#6a7181",
   },
+  "& input:-webkit-autofill": {
+    WebkitBoxShadow: "0 0 0 100px transparent inset",
+    WebkitTextFillColor: "#000",
+    transition: "background-color 5000s ease-in-out 0s",
+  },
+
+  "& input:-webkit-autofill:hover": {
+    WebkitBoxShadow: "0 0 0 100px transparent inset",
+  },
+
+  "& input:-webkit-autofill:focus": {
+    WebkitBoxShadow: "0 0 0 100px transparent inset",
+  },
 });
 
 const StyledInputLabel = styled(InputLabel)({

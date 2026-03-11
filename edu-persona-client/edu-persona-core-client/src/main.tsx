@@ -11,6 +11,8 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "./store";
 import GlobalLoader from "./components/common/GlobalLoader";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 function Root() {
   const { theme } = useTheme();
@@ -21,7 +23,9 @@ function Root() {
           <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
             <CssBaseline />
             <GlobalLoader />
-            <App />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <App />
+            </LocalizationProvider>
             <ToastContainer position="top-right" autoClose={3000} />
           </ThemeProvider>
         </BrowserRouter>

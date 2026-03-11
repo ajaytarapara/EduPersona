@@ -4,4 +4,9 @@ export const AppRoutes = {
   Register: "/register",
   Profile: "/profile",
   Admin: "/admin",
+  CompleteProfile: "/complete-profile",
+};
+
+export const ExternalAppRoute = {
+  ExamDashboard: "exam-portal-dashboard",
 };

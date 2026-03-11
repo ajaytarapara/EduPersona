@@ -8,5 +8,6 @@ namespace IdentityProvider.Business.IServices
     {
         Task UpdateProfileAsync(int userId, UpdateProfileRequest request);
         Task<BasicProfileResponse> GetUserBasicProfile(int userId);
+        Task<UserInfo> GetLoginUserInfoAsync(int sessionId);
     }
 }

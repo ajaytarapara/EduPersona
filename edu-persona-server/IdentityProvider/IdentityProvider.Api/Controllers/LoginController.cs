@@ -21,6 +21,14 @@ namespace IdentityProvider.Api.Controllers
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
             IdpLoginResponse response = await _loginService.LoginAsync(loginRequest);
+            Response.Cookies.Append("session_id", response.SessionId.ToString(), new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = false, // true in prod
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddMinutes(5),
+                Path = "/"
+            });
             return Success(response, ApiMessages.RequestSuccessful);
         }
 
@@ -36,22 +44,31 @@ namespace IdentityProvider.Api.Controllers
         [HttpPost("access-token")]
         public async Task<IActionResult> GetAccessToken([FromBody] string refreshToken)
         {
-            string newTokens = await _loginService.GetAccessTokenAsync(refreshToken);
-            return Success(newTokens, ApiMessages.RequestSuccessful);
+            AccessTokenByRefreshTokenResponse response = await _loginService.GetAccessTokenAsync(refreshToken);
+            return Success(response, ApiMessages.RequestSuccessful);
         }
 
-        [HttpGet("logout/{sessionId}")]
-        public async Task<IActionResult> Logout(int sessionId)
+        [HttpGet("logout/{userId}")]
+        public async Task<IActionResult> Logout(int userId)
         {
+            // if (!Request.Cookies.TryGetValue("session_id", out var sessionId))
+            // {
+            //     return Unauthorized(new
+            //     {
+            //         error = ApiMessages.SessionExpired
+            //     });
+            // }
+
             HttpClient httpClient = new HttpClient();
             var profileAppResponse = await httpClient.GetAsync($"http://localhost:5238/api/Auth/logout");
             if (!profileAppResponse.IsSuccessStatusCode)
             {
                 throw new BadRequestException(ApiMessages.LogoutFail);
             }
-            await _loginService.LogoutAsync(sessionId);
+            await _loginService.LogoutAsync(userId);
             Response.Cookies.Delete("session_id");
-            return Success(ApiMessages.SuccessfullyMessage("Logout"));
+            Response.Cookies.Delete("refresh_token");
+            return Success(ApiMessages.RequestSuccessful);
         }
 
         [HttpPost("google-login")]
@@ -59,7 +76,16 @@ namespace IdentityProvider.Api.Controllers
         {
             IdpLoginResponse? response = await _loginService.GoogleLoginAsync(request.Code);
 
+            Response.Cookies.Append("session_id", response.SessionId.ToString(), new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = false, // true in prod
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddMinutes(5),
+            });
+
             return Success(response, ApiMessages.RequestSuccessful);
         }
+
     }
 }

@@ -1,6 +1,8 @@
 export const IDPS_ENDPOINT = {
   Register: "/Register",
   Login: "/Login",
+  GoogleLogin: "/login/google-login",
+  Logout: "/login/logout",
 };
 
 export const CORE_ENDPOINT = {

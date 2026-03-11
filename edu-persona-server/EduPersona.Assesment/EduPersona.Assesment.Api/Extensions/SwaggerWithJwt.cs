@@ -11,9 +11,9 @@ namespace EduPersona.Assesment.Api.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "EduPersona Core API",
+                    Title = "EduPersona Assessment API",
                     Version = "v1",
-                    Description = "EduPersona Profile API"
+                    Description = "EduPersona Assessment API"
                 });
 
                 // Add JWT support

@@ -8,9 +8,9 @@ namespace IdentityProvider.Business.IServices
     public interface ILoginService : IBaseService<User>
     {
         Task<IdpLoginResponse> LoginAsync(LoginRequest loginRequest);
-        Task<string> GetAccessTokenAsync(string refreshToken);
+        Task<AccessTokenByRefreshTokenResponse> GetAccessTokenAsync(string refreshToken);
         Task<LoginResponse> ValidateSessionAsync(int sessionId);
-        Task LogoutAsync(int sessionId);
+        Task LogoutAsync(int userId);
         Task<IdpLoginResponse> GoogleLoginAsync(string code);
     }
 }

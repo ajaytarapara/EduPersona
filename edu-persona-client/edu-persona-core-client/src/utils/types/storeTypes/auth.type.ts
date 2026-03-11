@@ -3,5 +3,7 @@ export interface IAuthState {
   userInfo: {
     userName: string | null;
     role: string | null;
+    isProfileCompleted: boolean;
+    userId: number | null;
   };
 }

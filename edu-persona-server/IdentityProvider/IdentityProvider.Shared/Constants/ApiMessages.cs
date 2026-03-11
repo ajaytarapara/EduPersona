@@ -18,6 +18,7 @@
         public const string AccountMismatch = "Google account mismatch.";
         public static readonly Func<string, string> NotActive = (entityName) => $"{entityName} is not active.";
         public const string GoogleUserNotAbleToUpdate = "";
+        public static string AccessTokenGenerateError => "Your session is invalid.";
     }
 
     public static class GoogleAuthConstants

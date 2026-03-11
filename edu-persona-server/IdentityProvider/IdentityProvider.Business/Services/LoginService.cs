@@ -41,6 +41,7 @@ namespace IdentityProvider.Business.Services
             if (storedSession == null)
             {
                 //create session
+                await InActivePreviousSession(user.Id);
                 Session session = await CreateSession(user.Id);
                 IdpLoginResponse loginResponse = new IdpLoginResponse
                 {
@@ -51,7 +52,7 @@ namespace IdentityProvider.Business.Services
 
             IdpLoginResponse idpLoginResponse = new IdpLoginResponse
             {
-                SessionId = storedSession.Id
+                SessionId = storedSession.Id,
             };
 
             return idpLoginResponse;
@@ -87,10 +88,12 @@ namespace IdentityProvider.Business.Services
             return loginResponse;
         }
 
-        public async Task<string> GetAccessTokenAsync(string refreshToken)
+        public async Task<AccessTokenByRefreshTokenResponse> GetAccessTokenAsync(string refreshToken)
         {
             RefreshToken? token = await _unitOfWork.RefreshTokenRepository.GetFirstOrDefaultAsync(x => x.Token == refreshToken && !x.Revoked,
-            query => query.Include(x => x.Session).Include(x => x.User).ThenInclude(x => x.Role));
+            query => query.Include(x => x.User).ThenInclude(x => x.Role));
+
+            Session session = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(s => s.Id == token.SessionId);
 
             if (token == null)
                 throw new BadRequestException(ApiMessages.NotFoundMessage("RefreshToken"));
@@ -98,32 +101,53 @@ namespace IdentityProvider.Business.Services
             if (token.ExpiredAt < DateTime.UtcNow)
                 throw new BadRequestException(ApiMessages.RefreshTokenExpired);
 
-            if (token.Session.ExpiredAt < DateTime.UtcNow && token.Session.IsActive)
+            if (session == null)
+                throw new BadRequestException(ApiMessages.NotFoundMessage("Session"));
+
+            if (session.ExpiredAt < DateTime.UtcNow && session.IsActive)
                 throw new BadRequestException(ApiMessages.SessionExpired);
 
             string newAccessToken = await GenerateAccessToken(token.User);
 
-            return newAccessToken;
+            session.ExpiredAt = DateTime.UtcNow.AddMinutes(5);
+            await _unitOfWork.SessionRepository.UpdateAsync(session);
+
+            token.ExpiredAt = DateTime.UtcNow.AddMinutes(5);
+            await _unitOfWork.RefreshTokenRepository.UpdateAsync(token);
+            await _unitOfWork.SaveAsync();
+
+            AccessTokenByRefreshTokenResponse response = new AccessTokenByRefreshTokenResponse
+            {
+                NewAccessToken = newAccessToken,
+                RefreshTokenExpiredAt = token.ExpiredAt,
+                SessionExpiredAt = session.ExpiredAt,
+                RefreshToken = token.Token,
+                SessionId = session.Id
+            };
+
+            return response;
         }
 
-        public async Task LogoutAsync(int sessionId)
+        public async Task LogoutAsync(int userID)
         {
-            Session? storedSession = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(x => x.Id == sessionId && x.IsActive && x.ExpiredAt > DateTime.UtcNow);
-            if (storedSession == null)
-                throw new BadRequestException(ApiMessages.SessionExpired);
+            // Get all active sessions of the user
+            var sessions = await _unitOfWork.SessionRepository
+                .FindAsync(x => x.UserId == userID && x.IsActive);
 
-            storedSession.ExpiredAt = DateTime.UtcNow;
-            storedSession.IsActive = false;
+            foreach (var session in sessions)
+            {
+                session.IsActive = false;
+                session.ExpiredAt = DateTime.UtcNow;
+            }
 
-            RefreshToken? refreshToken = await _unitOfWork.RefreshTokenRepository.GetFirstOrDefaultAsync(x => x.SessionId == sessionId && !x.Revoked);
-            if (refreshToken == null)
-                throw new BadRequestException(ApiMessages.NotFoundMessage("RefreshToken"));
+            // Get all non-revoked refresh tokens linked to those sessions
+            var sessionIds = sessions.Select(s => s.Id).ToList();
 
-            refreshToken.ExpiredAt = DateTime.UtcNow;
-            refreshToken.Revoked = true;
+            var refreshTokens = await _unitOfWork.RefreshTokenRepository
+                .FindAsync(x => sessionIds.Contains(x.SessionId) && !x.Revoked);
 
-            await _unitOfWork.SessionRepository.UpdateAsync(storedSession);
-            await _unitOfWork.RefreshTokenRepository.UpdateAsync(refreshToken);
+            await _unitOfWork.RefreshTokenRepository.DeleteRangeAsync(refreshTokens);
+            await _unitOfWork.SessionRepository.UpdateRangeAsync(sessions);
 
             await _unitOfWork.SaveAsync();
         }
@@ -208,9 +232,9 @@ namespace IdentityProvider.Business.Services
                     IsActive = true,
                     CreatedAt = DateTime.UtcNow,
                     RoleId = 2,
-                    FirstName=payload.Name.Split(" ")[0],
-                    LastName =payload.Name.Split(" ")[1]
-                }; 
+                    FirstName = payload.Name.Split(" ")[0],
+                    LastName = payload.Name.Split(" ")[1]
+                };
 
                 await AddAsync(user);
                 await _unitOfWork.SaveAsync();
@@ -272,7 +296,7 @@ namespace IdentityProvider.Business.Services
             Session session = new Session
             {
                 UserId = userID,
-                ExpiredAt = DateTime.UtcNow.AddHours(8)
+                ExpiredAt = DateTime.UtcNow.AddMinutes(5)
             };
 
             Session sessionResponse = await _unitOfWork.SessionRepository.AddAsync(session);
@@ -288,12 +312,19 @@ namespace IdentityProvider.Business.Services
             {
                 UserId = userID,
                 SessionId = sessionId,
-                ExpiredAt = DateTime.UtcNow.AddDays(7),
+                ExpiredAt = DateTime.UtcNow.AddMinutes(5),
                 Token = refreshToken
             };
 
             await _unitOfWork.RefreshTokenRepository.AddAsync(refreshTokenData);
 
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task InActivePreviousSession(int userId)
+        {
+            IEnumerable<Session> sessions = await _unitOfWork.SessionRepository.FindAsync(s => s.UserId == userId && s.IsActive);
+            await _unitOfWork.SessionRepository.UpdateRangeAsync(sessions);
             await _unitOfWork.SaveAsync();
         }
     }

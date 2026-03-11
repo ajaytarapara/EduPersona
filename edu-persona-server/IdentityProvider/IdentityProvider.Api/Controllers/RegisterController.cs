@@ -21,5 +21,6 @@ namespace IdentityProvider.Api.Controllers
             await _userService.RegisterAsync(registerRequest);
             return Success(ApiMessages.UserRegisteredSuccessfully);
         }
+
     }
 }

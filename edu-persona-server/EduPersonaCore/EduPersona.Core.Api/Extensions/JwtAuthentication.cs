@@ -1,6 +1,9 @@
 using System.Text;
+using System.Text.Json;
+using EduPersona.Core.Shared.Constants;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using static EduPersona.Core.Shared.Constants.Messages;
 
 namespace EduPersona.Core.Api.Extensions
 {
@@ -23,7 +26,7 @@ namespace EduPersona.Core.Api.Extensions
                     OnMessageReceived = context =>
                     {
                         // Read token from HTTP-only cookie
-                        var token = context.Request.Cookies["access_token"];
+                        var token = context.Request.Cookies["profile_access_token"];
 
                         if (!string.IsNullOrEmpty(token))
                         {
@@ -31,8 +34,39 @@ namespace EduPersona.Core.Api.Extensions
                         }
 
                         return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception is SecurityTokenExpiredException)
+                        {
+                            context.HttpContext.Items["TokenExpired"] = true;
+                        }
+
+                        return Task.CompletedTask;
+                    },
+
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+
+                        var isExpired = context.HttpContext.Items.ContainsKey("TokenExpired");
+
+                        var response = new
+                        {
+                            error = isExpired
+                                ? ErrorMessage.AccessTokenExpired
+                                : ErrorMessage.InvalidAccessToken
+                        };
+
+                        return context.Response.WriteAsync(
+                            JsonSerializer.Serialize(response)
+                        );
                     }
                 };
+
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

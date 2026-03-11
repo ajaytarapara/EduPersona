@@ -43,11 +43,20 @@ namespace IdentityProvider.Business.Services
 
         public async Task<BasicProfileResponse> GetUserBasicProfile(int userId)
         {
-            User? user = await GetFirstOrDefaultAsync(x => x.Id == userId, e => e.Include(x=>x.Role));
-            if(user == null)
+            User? user = await GetFirstOrDefaultAsync(x => x.Id == userId, e => e.Include(x => x.Role));
+            if (user == null)
                 throw new NotFoundException(ApiMessages.NotFoundMessage("User"));
             BasicProfileResponse profile = _mapper.Map<BasicProfileResponse>(user);
             return profile;
+        }
+
+        public async Task<UserInfo> GetLoginUserInfoAsync(int sessionId)
+        {
+            Session? session = await _unitOfWork.SessionRepository.GetFirstOrDefaultAsync(s => s.Id == sessionId && s.IsActive && s.ExpiredAt > DateTime.UtcNow, query => query.Include(x => x.User).ThenInclude(x => x.Role));
+            if (session == null)
+                throw new NotFoundException(ApiMessages.NotFoundMessage("Session"));
+            UserInfo userInfo = _mapper.Map<UserInfo>(session.User);
+            return userInfo;
         }
     }
 }

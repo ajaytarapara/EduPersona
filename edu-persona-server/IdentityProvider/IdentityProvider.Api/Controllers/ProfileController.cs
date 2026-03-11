@@ -10,7 +10,6 @@ namespace IdentityProvider.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize (Roles = nameof(Roles.User))]
     public class ProfileController : BaseApiController
     {
         private readonly IProfileService _profileService;
@@ -22,6 +21,8 @@ namespace IdentityProvider.Api.Controllers
             _currentUserService = currentUserService;
         }
 
+
+        [Authorize(Roles = nameof(Roles.User))]
         [HttpPut("update")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
@@ -32,14 +33,23 @@ namespace IdentityProvider.Api.Controllers
             return Success(ApiMessages.SuccessfullyMessage("Profile Updated"));
         }
 
+
+        [Authorize(Roles = nameof(Roles.User))]
         [HttpGet]
         public async Task<IActionResult> GetProfile()
         {
             int userId = _currentUserService.GetCurrentUserId();
 
-            BasicProfileResponse basicProfile =await  _profileService.GetUserBasicProfile(userId);
+            BasicProfileResponse basicProfile = await _profileService.GetUserBasicProfile(userId);
 
-            return Success(basicProfile,ApiMessages.RequestSuccessful);
+            return Success(basicProfile, ApiMessages.RequestSuccessful);
+        }
+
+        [HttpGet("login-user-info/{sessionId}")]
+        public async Task<IActionResult> GetLoginUserInfo(int sessionId)
+        {
+            UserInfo userInfo = await _profileService.GetLoginUserInfoAsync(sessionId);
+            return Success(userInfo, ApiMessages.RequestSuccessful);
         }
 
     }

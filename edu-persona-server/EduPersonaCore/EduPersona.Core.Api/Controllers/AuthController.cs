@@ -3,7 +3,6 @@ using EduPersona.Core.Business.IServices;
 using EduPersona.Core.Shared.Constants;
 using EduPersona.Core.Shared.Models.ExternalApiResponse;
 using EduPersona.Core.Shared.Models.Response;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static EduPersona.Core.Shared.ExceptionHandler.SpecificExceptions;
 
@@ -20,14 +19,26 @@ namespace EduPersona.Core.Api.Controllers
             _userService = userService;
         }
 
-        [HttpGet("get-access-token/{sessionId}")]
-        public async Task<IActionResult> GetAccessToken(int sessionId)
+        [HttpGet("get-access-token")]
+        public async Task<IActionResult> GetAccessToken()
         {
+            if (!Request.Cookies.TryGetValue("session_id", out var sessionId))
+            {
+                return Unauthorized(new
+                {
+                    error = Messages.AccessTokenGenerateError
+                });
+            }
+
             HttpClient httpClient = new HttpClient();
             var response = await httpClient.GetAsync($"http://localhost:5183/api/Login/validate-session/{sessionId}");
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new BadRequestException(Messages.AccessTokenGenerateError);
+                return Unauthorized(new
+                {
+                    error = Messages.AccessTokenGenerateError
+                });
             }
 
             var data = await response.Content.ReadAsStringAsync();
@@ -38,12 +49,12 @@ namespace EduPersona.Core.Api.Controllers
 
             ApiResponse<AccessTokenResponse>? result = JsonSerializer.Deserialize<ApiResponse<AccessTokenResponse>>(data, options);
 
-            Response.Cookies.Append("access_token", result.Data.AccessToken, new CookieOptions
+            Response.Cookies.Append("profile_access_token", result.Data.AccessToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(1),
             });
 
             Response.Cookies.Append("refresh_token", result.Data.RefreshToken, new CookieOptions
@@ -51,7 +62,7 @@ namespace EduPersona.Core.Api.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(5),
             });
 
             return Success(result.Data.UserInfo, Messages.LoginSuccessfully);
@@ -63,7 +74,10 @@ namespace EduPersona.Core.Api.Controllers
             string? refreshToken = Request.Cookies["refresh_token"];
 
             if (refreshToken == null)
-                return Unauthorized(Messages.RefreshTokenExpired);
+                return Unauthorized(new
+                {
+                    error = Messages.RefreshTokenInvalid
+                });
 
             HttpClient httpClient = new HttpClient();
 
@@ -71,7 +85,11 @@ namespace EduPersona.Core.Api.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new BadRequestException(Messages.AccessTokenGenerateError);
+                // throw new UnauthorizedException(Messages.AccessTokenGenerateError);
+                return Unauthorized(new
+                {
+                    error = Messages.RefreshTokenInvalid
+                });
             }
 
             var data = await response.Content.ReadAsStringAsync();
@@ -80,14 +98,31 @@ namespace EduPersona.Core.Api.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            ApiResponse<string>? result = JsonSerializer.Deserialize<ApiResponse<string>>(data, options);
+            ApiResponse<AccessTokenByRefreshTokenResponse>? result = JsonSerializer.Deserialize<ApiResponse<AccessTokenByRefreshTokenResponse>>(data, options);
 
-            Response.Cookies.Append("access_token", result.Data, new CookieOptions
+            Response.Cookies.Append("profile_access_token", result.Data.NewAccessToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = false,
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(1),
+            });
+
+            Response.Cookies.Append("refresh_token", result.Data.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = result.Data.RefreshTokenExpiredAt,
+            });
+
+            Response.Cookies.Append("session_id", result.Data.SessionId.ToString(), new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = false, // true in production
+                SameSite = SameSiteMode.Lax,
+                Expires = result.Data.SessionExpiredAt, // new extended time
+                Path = "/"
             });
 
             return Success(Messages.RequestSuccessful);
@@ -97,7 +132,7 @@ namespace EduPersona.Core.Api.Controllers
         [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
-            Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("profile_access_token");
             Response.Cookies.Delete("refresh_token");
             return Success(Messages.SuccessfullyMessage("Logout"));
         }

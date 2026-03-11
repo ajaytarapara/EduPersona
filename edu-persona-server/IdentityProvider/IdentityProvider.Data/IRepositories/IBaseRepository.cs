@@ -38,5 +38,7 @@ namespace IdentityProvider.Data.IRepositories
 
         // Check existence
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+
+        Task UpdateRangeAsync(IEnumerable<T> entities);
     }
 }

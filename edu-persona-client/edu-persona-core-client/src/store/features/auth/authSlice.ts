@@ -5,6 +5,8 @@ const initialState: IAuthState = {
   userInfo: {
     userName: "",
     role: "",
+    isProfileCompleted: false,
+    userId: null,
   },
   sessionId: null,
 };
@@ -16,19 +18,32 @@ const authSlice = createSlice({
     setSession: (
       state,
       action: PayloadAction<{
-        userInfo: { userName: string; role: string };
+        userInfo: {
+          userName: string;
+          role: string;
+          isProfileCompleted: boolean;
+          userId: number;
+        };
         sessionId: number;
       }>
     ) => {
       state.userInfo = action.payload.userInfo;
       state.sessionId = action.payload.sessionId;
     },
-    logout: (state) => {
-      state.userInfo = { userName: "", role: "" };
+    logoutUser: (state) => {
+      state.userInfo = {
+        userName: "",
+        role: "",
+        isProfileCompleted: false,
+        userId: null,
+      };
       state.sessionId = null;
+    },
+    setProfileComplete: (state) => {
+      state.userInfo = { ...state.userInfo, isProfileCompleted: true };
     },
   },
 });
 
-export const { logout, setSession } = authSlice.actions;
+export const { logoutUser, setSession, setProfileComplete } = authSlice.actions;
 export const authReducer = authSlice.reducer;

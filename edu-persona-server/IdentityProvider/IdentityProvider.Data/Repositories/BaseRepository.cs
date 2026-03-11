@@ -127,6 +127,12 @@ namespace IdentityProvider.Data.Repositories
                 .AnyAsync(predicate);
         }
 
+        public async Task UpdateRangeAsync(IEnumerable<T> entities)
+        {
+            _dbSet.UpdateRange(entities);
+            await Task.CompletedTask;
+        }
+
         #endregion
     }
 }
